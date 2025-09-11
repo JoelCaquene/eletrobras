@@ -6,20 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minha Máquina - Cigna Group</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --dark-bg: #0c0b2d;
+            --primary-color: #ffeb3b;
+            --accent-color: #ff4b2b;
+            --success-color: #00ff00;
+            --container-bg: rgba(255, 255, 255, 0.1);
+            --border-color: rgba(255, 255, 255, 0.3);
+            --glow-color: #ffeb3b;
+        }
+
         body {
-            background-color: #0c0b2d;
-            background-image: url('{% static "cigna_group/images/fundo_azul_raios.jpg" %}'); /* Use o caminho da sua imagem */
+            background-color: var(--dark-bg);
+            background-image: url('{% static "cigna_group/images/fundo_azul_raios.jpg" %}');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Altera para alinhar ao topo */
+            justify-content: center;
             min-height: 100vh;
             text-align: center;
         }
@@ -27,83 +39,98 @@
         .header {
             width: 100%;
             padding: 20px;
-            color: #ffeb3b;
-            text-shadow: 0 0 5px #ffeb3b;
+            color: var(--primary-color);
+            text-shadow: 0 0 5px var(--glow-color);
             font-size: 1.5em;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        .machine-container {
+        .task-container {
             width: 90%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--container-bg);
             backdrop-filter: blur(10px);
             border-radius: 25px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            margin-top: 40px; /* Aumenta a margem superior para subir a máquina */
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            margin-top: -50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
         }
 
-        .machine-header h2 {
+        .task-header h2 {
             margin: 0 0 10px;
-            font-size: 1.8em;
-            color: #ffeb3b;
-            text-shadow: 0 0 10px #ffeb3b;
+            font-size: 2em;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--glow-color);
         }
-        
-        .panel-display {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #77ff77;
-            box-shadow: 0 0 10px #77ff77, inset 0 0 5px #77ff77;
-            padding: 15px;
-            border-radius: 10px;
+
+        .task-info-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--success-color);
+            box-shadow: 0 0 15px var(--success-color), inset 0 0 5px var(--success-color);
+            padding: 20px;
+            border-radius: 15px;
             width: 90%;
             margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .panel-display p {
-            margin: 8px 0;
-            font-size: 1.1em;
-        }
-
-        #timer {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #00ff00;
-            text-shadow: 0 0 10px #00ff00;
-        }
-
-        #production-btn {
-            background-image: linear-gradient(to right, #ff416c, #ff4b2b);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 30px;
+        .task-info-card p {
+            margin: 0;
             font-size: 1.2em;
+        }
+
+        .status-text {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--success-color);
+            text-shadow: 0 0 5px var(--success-color);
+        }
+
+        #receive-gain-btn {
+            background-image: linear-gradient(to right, #2bc0e4, #eae42b);
+            color: #0c0b2d;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 40px;
+            font-size: 1.4em;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
             text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
         }
 
-        #production-btn:disabled {
-            background: #555;
+        #receive-gain-btn:hover:enabled {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            filter: brightness(1.1);
+        }
+
+        #receive-gain-btn:disabled {
+            background-image: linear-gradient(to right, #555, #777);
+            color: #ccc;
             cursor: not-allowed;
             box-shadow: none;
             filter: grayscale(100%);
-        }
-
-        #production-btn:hover:enabled {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px #ff416c;
+            transform: none;
         }
         
         .message {
-            margin-top: 15px;
+            margin-top: 20px;
             font-size: 1em;
-            color: #ffeb3b;
+            color: var(--primary-color);
             font-weight: bold;
-            text-shadow: 0 0 5px #ffeb3b;
+            text-shadow: 0 0 5px var(--glow-color);
         }
 
         .footer-nav {
@@ -116,6 +143,7 @@
             padding: 10px 0;
             border-top: 2px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(5px);
+            z-index: 100;
         }
 
         .footer-item {
@@ -136,7 +164,7 @@
         }
 
         .footer-item:hover {
-            color: #ffeb3b;
+            color: var(--primary-color);
         }
     </style>
 </head>
@@ -145,19 +173,16 @@
         <h1>Tarefa</h1>
     </div>
 
-    <div class="machine-container">
-        <div class="machine-header">
-            <h2>Máquina de Produção</h2>
+    <div class="task-container">
+        <div class="task-header">
+            <h2>Ganho Diário</h2>
         </div>
-        <div class="machine-body">
-            <div class="panel-display">
-                <p>Status: <span id="status">Pronta para produzir</span></p>
-                <p>Próxima Produção em:</p>
-                <p id="timer">--:--:--</p>
-            </div>
-            <button id="production-btn">Produção</button>
-            <div class="message" id="info-message"></div>
+        <div class="task-info-card">
+            <p>Seu ganho diário está disponível.</p>
+            <p class="status-text" id="status-display">Pronto para coletar!</p>
         </div>
+        <button id="receive-gain-btn">Receber Ganho</button>
+        <div class="message" id="info-message"></div>
     </div>
 
     <nav class="footer-nav">
@@ -184,82 +209,81 @@
     </nav>
 
     <script>
-        const productionBtn = document.getElementById('production-btn');
-        const timerDisplay = document.getElementById('timer');
-        const statusDisplay = document.getElementById('status');
+        const receiveGainBtn = document.getElementById('receive-gain-btn');
+        const statusDisplay = document.getElementById('status-display');
         const infoMessage = document.getElementById('info-message');
 
-        const cooldownTime = 24 * 60 * 60 * 1000; // 24 horas em milissegundos
-        let lastProductionTime = localStorage.getItem('lastProductionTime') || 0;
-        
-        // Esta variável deve ser passada do backend (Django)
-        // Certifique-se de que sua view passe 'has_level' para o template
-        let hasLevel = {{ has_level|yesno:"true,false" }}; 
+        // Esta variável DEVE ser passada do backend (Django) para funcionar corretamente.
+        // last_task_timestamp: A última vez que a tarefa foi feita (em milissegundos).
+        // has_level: True ou False, dependendo se o usuário tem um nível alugado.
+        const lastTaskTimestamp = {{ last_task_timestamp|default_if_none:0 }};
+        const hasLevel = {{ has_level|yesno:"true,false" }};
+        const isToday = (timestamp) => {
+            const date = new Date(timestamp);
+            const today = new Date();
+            return date.getDate() === today.getDate() &&
+                   date.getMonth() === today.getMonth() &&
+                   date.getFullYear() === today.getFullYear();
+        };
 
         function updateUI() {
             if (!hasLevel) {
-                productionBtn.disabled = true;
-                infoMessage.textContent = "Você precisa alugar um nível para usar a máquina.";
-                statusDisplay.textContent = "Inativa";
-                timerDisplay.textContent = "--:--:--";
+                receiveGainBtn.disabled = true;
+                statusDisplay.textContent = "Máquina Inativa";
+                infoMessage.textContent = "Você precisa alugar um nível para ativar a máquina.";
+                receiveGainBtn.textContent = "Alugue um Nível";
                 return;
             }
-            
-            infoMessage.textContent = "";
-            const currentTime = new Date().getTime();
-            const elapsedTime = currentTime - lastProductionTime;
-            const remainingTime = cooldownTime - elapsedTime;
 
-            if (remainingTime <= 0) {
-                timerDisplay.textContent = "00:00:00";
-                productionBtn.disabled = false;
-                statusDisplay.textContent = "Pronta para produzir";
-                productionBtn.textContent = "Produção";
+            if (isToday(lastTaskTimestamp)) {
+                receiveGainBtn.disabled = true;
+                statusDisplay.textContent = "Ganho Coletado!";
+                infoMessage.textContent = "A tarefa de hoje já foi realizada. Volte amanhã.";
+                receiveGainBtn.textContent = "Volte Amanhã";
             } else {
-                const hours = Math.floor(remainingTime / (1000 * 60 * 60));
-                const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-                const formatTime = (time) => String(time).padStart(2, '0');
-
-                timerDisplay.textContent = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
-                productionBtn.disabled = true;
-                statusDisplay.textContent = "Em produção...";
-                productionBtn.textContent = "Produzindo...";
+                receiveGainBtn.disabled = false;
+                statusDisplay.textContent = "Pronto para coletar!";
+                infoMessage.textContent = "";
+                receiveGainBtn.textContent = "Receber Ganho";
             }
         }
 
-        productionBtn.addEventListener('click', async () => {
-            if (!hasLevel) {
-                infoMessage.textContent = "Você precisa alugar um nível para usar a máquina.";
-                return;
-            }
+        receiveGainBtn.addEventListener('click', async () => {
+            if (receiveGainBtn.disabled) return;
+
+            receiveGainBtn.disabled = true;
+            receiveGainBtn.textContent = "Coletando...";
+            infoMessage.textContent = "Processando seu ganho...";
+            statusDisplay.textContent = "Coletando...";
 
             try {
-                const response = await fetch('/realizar-tarefa/', { 
+                const response = await fetch('/realizar-tarefa/', {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}',
-                    }
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
                 });
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    // Simula a lógica do backend.
-                    lastProductionTime = new Date().getTime();
-                    localStorage.setItem('lastProductionTime', lastProductionTime);
-                    infoMessage.textContent = "Tarefa realizada! Renda diária adicionada.";
+                    infoMessage.textContent = "Tarefa realizada com sucesso! Ganho diário adicionado.";
+                    // Em um ambiente de produção, esta data deve vir do backend
+                    // lastTaskTimestamp = new Date().getTime(); 
                 } else {
                     infoMessage.textContent = data.message;
                 }
             } catch (error) {
+                console.error('Error:', error);
                 infoMessage.textContent = "Erro ao realizar a tarefa. Tente novamente.";
+            } finally {
+                // A UI é atualizada independentemente do resultado
+                updateUI();
             }
-            
-            updateUI();
         });
 
-        setInterval(updateUI, 1000);
+        // Inicializa a interface assim que a página carrega
         updateUI();
     </script>
 </body>

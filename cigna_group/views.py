@@ -307,8 +307,18 @@ def tarefa_view(request):
     niveis_alugados_ativos = NivelAlugado.objects.filter(usuario=usuario, is_active=True)
     has_level = niveis_alugados_ativos.exists()
     
+    last_task_timestamp = None
+    if has_level:
+        # Pega a data da última tarefa do primeiro nível ativo.
+        # Se um usuário puder ter múltiplos níveis, você pode precisar de uma lógica mais complexa.
+        # Mas para um nível por usuário, isso funciona bem.
+        ultima_tarefa = niveis_alugados_ativos.first().ultima_tarefa
+        if ultima_tarefa:
+            last_task_timestamp = int(ultima_tarefa.timestamp() * 1000)
+
     context = {
-        'has_level': has_level
+        'has_level': has_level,
+        'last_task_timestamp': last_task_timestamp
     }
     return render(request, 'tarefa.html', context)
 

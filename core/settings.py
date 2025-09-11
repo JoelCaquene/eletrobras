@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dotenv
-import dj_database_url  # Adicionado para conectar com o banco de dados do Heroku
+import dj_database_url
 
 dotenv.load_dotenv()
 

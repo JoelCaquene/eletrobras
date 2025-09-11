@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('taxa_saque', models.DecimalField(decimal_places=2, default=0.0, max_digits=5, verbose_name='Taxa de Saque (%)')),
-                ('saque_minimo', models.DecimalField(decimal_places=2, default=1000.0, max_digits=10, verbose_name='Saque Mínimo (USD)')),
+                ('saque_minimo', models.DecimalField(decimal_places=2, default=1000.0, max_digits=10, verbose_name='Saque Mínimo (KZ)')),
                 ('horario_saque_inicio', models.TimeField(default=datetime.time(8, 0), verbose_name='Início Horário de Saque')),
                 ('horario_saque_fim', models.TimeField(default=datetime.time(18, 0), verbose_name='Fim Horário de Saque')),
                 ('link_grupo_whatsapp', models.URLField(blank=True, null=True, verbose_name='Link do Grupo WhatsApp')),
@@ -39,8 +39,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('numero', models.IntegerField(unique=True, verbose_name='Número do Nível')),
                 ('nome_nivel', models.CharField(max_length=100, unique=True, verbose_name='Nome do Nível')),
-                ('deposito_minimo', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Depósito Mínimo para Alugar (USD)')),
-                ('ganho_diario', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Ganho Diário (USD)')),
+                ('deposito_minimo', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Depósito Mínimo para Alugar (KZ)')),
+                ('ganho_diario', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Ganho Diário (KZ)')),
                 ('ciclo_dias', models.IntegerField(verbose_name='Ciclo de Duração (dias)')),
                 ('imagem', models.ImageField(blank=True, null=True, upload_to='niveis_imagens/', verbose_name='Imagem do Nível')),
             ],
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
             name='PremioSubsidio',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('valor', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor do Prêmio (USD)')),
+                ('valor', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor do Prêmio (KZ)')),
                 ('chance', models.DecimalField(decimal_places=2, max_digits=5, verbose_name='Chance (0.00 a 100.00)')),
                 ('descricao', models.CharField(blank=True, max_length=255, null=True, verbose_name='Descrição')),
             ],
@@ -136,7 +136,7 @@ class Migration(migrations.Migration):
             name='Deposito',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('valor', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor do Depósito (USD)')),
+                ('valor', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor do Depósito (KZ)')),
                 ('comprovativo_imagem', models.ImageField(upload_to='comprovantes_depositos/', verbose_name='Comprovativo de Depósito')),
                 ('status', models.CharField(choices=[('Pendente', 'Pendente'), ('Aprovado', 'Aprovado'), ('Rejeitado', 'Rejeitado')], default='Pendente', max_length=20, verbose_name='Status')),
                 ('data_deposito', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Data do Depósito')),
@@ -178,7 +178,7 @@ class Migration(migrations.Migration):
             name='Saque',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('valor', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor do Saque (USD)')),
+                ('valor', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Valor do Saque (KZ)')),
                 ('iban_cliente', models.CharField(blank=True, max_length=30, null=True, verbose_name='IBAN do Cliente')),
                 ('status', models.CharField(choices=[('Pendente', 'Pendente'), ('Aprovado', 'Aprovado'), ('Rejeitado', 'Rejeitado')], default='Pendente', max_length=20, verbose_name='Status')),
                 ('data_saque', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Data da Solicitação')),
@@ -194,7 +194,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data_realizacao', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Data de Realização')),
-                ('ganho', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Ganho da Tarefa (USD)')),
+                ('ganho', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Ganho da Tarefa (KZ)')),
                 ('usuario', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tarefas_realizadas', to=settings.AUTH_USER_MODEL, verbose_name='Usuário')),
             ],
             options={

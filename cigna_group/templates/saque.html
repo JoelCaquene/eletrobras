@@ -282,7 +282,7 @@
 
     <div id="withdrawSection" class="container withdraw-container">
         <h2>Solicitar Saque</h2>
-        <p class="current-balance">Saldo Disponível: {{ usuario.saldo_disponivel|floatformat:2 }} USD</p>
+        <p class="current-balance">Saldo Disponível: {{ usuario.saldo_disponivel|floatformat:2 }} KZ</p>
         
         {% if messages %}
             <ul class="messages">
@@ -299,7 +299,7 @@
         <form method="post" action="{% url 'saque' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="amount">Valor do Saque (USD)</label>
+                <label for="amount">Valor do Saque (KZ)</label>
                 <input type="number" id="amount" name="amount" min="{{ SAQUE_MINIMO }}" step="0.01" required>
             </div>
             
@@ -307,7 +307,7 @@
         </form>
 
         <div class="info-box">
-            <p><strong>Saque Mínimo:</strong> {{ SAQUE_MINIMO }} USD</p>
+            <p><strong>Saque Mínimo:</strong> {{ SAQUE_MINIMO }} KZ</p>
             <p><strong>Horário de Saque:</strong> {{ mensagem_horario }}</p>
             <p><strong>Taxa de Saque:</strong> {{ TAXA_SAQUE }}%</p>
         </div>
@@ -323,7 +323,7 @@
             {% for saque in historico_saques %}
                 <li class="history-item {% if saque.status == 'Aprovado' %}status-approved{% elif saque.status == 'Pendente' %}status-pending{% else %}status-rejected{% endif %}">
                     <div class="history-details">
-                        <p><strong>Valor:</strong> {{ saque.valor|floatformat:2 }} USD</p>
+                        <p><strong>Valor:</strong> {{ saque.valor|floatformat:2 }} KZ</p>
                         <p><strong>Data:</strong> {{ saque.data_saque|date:"d/m/Y H:i" }}</p>
                     </div>
                     <div class="history-status-icon">

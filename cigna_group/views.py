@@ -185,7 +185,7 @@ def aprovar_deposito_com_subsidio(deposito_id):
 
             deposito.usuario.saldo_disponivel += deposito.valor
             deposito.usuario.save()
-            print(f"Valor do depósito ({deposito.valor:.2f} USD) creditado ao saldo do usuário {deposito.usuario.phone_number}.")
+            print(f"Valor do depósito ({deposito.valor:.2f} KZ) creditado ao saldo do usuário {deposito.usuario.phone_number}.")
 
             convidador = deposito.usuario.inviter
             if convidador:
@@ -197,7 +197,7 @@ def aprovar_deposito_com_subsidio(deposito_id):
                     convidador.saldo_subsidio += valor_subs_convite
                     convidador.saldo_disponivel += valor_subs_convite
                     convidador.save()
-                    print(f"Subsídio de {valor_subs_convite:.2f} USD concedido ao convidador {convidador.username if convidador.username else convidador.phone_number} (com nível ativo) pelo depósito de {deposito.usuario.username if deposito.usuario.username else deposito.usuario.phone_number}.")
+                    print(f"Subsídio de {valor_subs_convite:.2f} KZ concedido ao convidador {convidador.username if convidador.username else convidador.phone_number} (com nível ativo) pelo depósito de {deposito.usuario.username if deposito.usuario.username else deposito.usuario.phone_number}.")
                 else:
                     print(f"Convidador {convidador.username if convidador.username else convidador.phone_number} NÃO tem nível ativo. Subsídio de convite NÃO concedido.")
             else:
@@ -262,7 +262,7 @@ def saque_view(request):
             return redirect('saque')
             
         if valor_saque_bruto < SAQUE_MINIMO:
-            messages.error(request, f'O saque mínimo é de {SAQUE_MINIMO} USD.')
+            messages.error(request, f'O saque mínimo é de {SAQUE_MINIMO} KZ.')
             return redirect('saque')
             
         if valor_saque_bruto > usuario.saldo_disponivel:
@@ -285,7 +285,7 @@ def saque_view(request):
                 usuario.total_sacado += valor_saque_liquido
                 usuario.save()
             
-            messages.success(request, f'Solicitação de saque de {valor_saque_liquido:.2f} USD enviada com sucesso! Uma taxa de {valor_taxa:.2f} USD foi aplicada.')
+            messages.success(request, f'Solicitação de saque de {valor_saque_liquido:.2f} KZ enviada com sucesso! Uma taxa de {valor_taxa:.2f} KZ foi aplicada.')
             return redirect('saque')
             
         except Exception as e:
@@ -362,7 +362,7 @@ def realizar_tarefa(request):
                 ganho=total_ganho_dia
             )
             
-        return JsonResponse({'status': 'success', 'message': f'Tarefa realizada com sucesso! Você ganhou {total_ganho_dia:.2f} USD.'})
+        return JsonResponse({'status': 'success', 'message': f'Tarefa realizada com sucesso! Você ganhou {total_ganho_dia:.2f} KZ.'})
 
     except Exception as e:
         print(f"Erro ao processar tarefa: {e}")
@@ -576,7 +576,7 @@ def abrir_premio(request):
 
         return JsonResponse({
             'status': 'success',
-            'message': f'Parabéns! Você ganhou {premio_ganho.valor:.2f} USD em subsídios!',
+            'message': f'Parabéns! Você ganhou {premio_ganho.valor:.2f} KZ em subsídios!',
             'winning_value': float(premio_ganho.valor),
         })
 

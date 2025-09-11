@@ -367,7 +367,7 @@
                         statusMessage.className = 'message success';
                         statusMessage.style.display = 'block';
                         
-                        premioValor.textContent = `${data.winning_value.toFixed(2)} USD`;
+                        premioValor.textContent = `${data.winning_value.toFixed(2)} KZ`;
                         premioMensagem.textContent = 'Prêmio Ganho!';
                         premioCard.style.animation = 'pulse-glow 1.5s infinite';
 
@@ -376,7 +376,7 @@
                         statusMessage.className = 'message error';
                         statusMessage.style.display = 'block';
 
-                        premioValor.textContent = '0.00 USD';
+                        premioValor.textContent = '0.00 KZ';
                         premioMensagem.textContent = 'Tente novamente.';
                     }
                 })

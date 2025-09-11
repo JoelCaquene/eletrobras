@@ -69,7 +69,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 # Modelo para Configurações Gerais da cigna_group
 class Config(models.Model):
     taxa_saque = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, verbose_name="Taxa de Saque (%)")
-    saque_minimo = models.DecimalField(max_digits=10, decimal_places=2, default=1000.00, verbose_name="Saque Mínimo (USD)")
+    saque_minimo = models.DecimalField(max_digits=10, decimal_places=2, default=1000.00, verbose_name="Saque Mínimo (KZ)")
     horario_saque_inicio = models.TimeField(default=timezone.datetime(2000, 1, 1, 8, 0).time(), verbose_name="Início Horário de Saque")
     horario_saque_fim = models.TimeField(default=timezone.datetime(2000, 1, 1, 18, 0).time(), verbose_name="Fim Horário de Saque")
     link_grupo_whatsapp = models.URLField(blank=True, null=True, verbose_name="Link do Grupo WhatsApp")
@@ -87,8 +87,8 @@ class Config(models.Model):
 class Nivel(models.Model):
     numero = models.IntegerField(unique=True, verbose_name="Número do Nível")
     nome_nivel = models.CharField(max_length=100, unique=True, verbose_name="Nome do Nível")
-    deposito_minimo = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Depósito Mínimo para Alugar (USD)")
-    ganho_diario = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ganho Diário (USD)")
+    deposito_minimo = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Depósito Mínimo para Alugar (KZ)")
+    ganho_diario = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ganho Diário (KZ)")
     ciclo_dias = models.IntegerField(verbose_name="Ciclo de Duração (dias)")
     imagem = models.ImageField(upload_to='niveis_imagens/', blank=True, null=True, verbose_name="Imagem do Nível")
 
@@ -121,7 +121,7 @@ class PlatformBankDetails(models.Model):
 # Modelo para Depósitos
 class Deposito(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='depositos', verbose_name="Usuário")
-    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Depósito (USD)")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Depósito (KZ)")
     comprovativo_imagem = models.ImageField(upload_to='comprovantes_depositos/', verbose_name="Comprovativo de Depósito")
     status = models.CharField(max_length=20, default='Pendente', choices=[('Pendente', 'Pendente'), ('Aprovado', 'Aprovado'), ('Rejeitado', 'Rejeitado')], verbose_name="Status")
     data_deposito = models.DateTimeField(default=timezone.now, verbose_name="Data do Depósito")
@@ -131,7 +131,7 @@ class Deposito(models.Model):
         verbose_name_plural = "Depósitos"
 
     def __str__(self):
-        return f"Depósito de {self.valor} USD por {self.usuario.phone_number} - {self.status}"
+        return f"Depósito de {self.valor} KZ por {self.usuario.phone_number} - {self.status}"
 
 # Modelo para Detalhes Bancários do Cliente
 class ClientBankDetails(models.Model):
@@ -171,7 +171,7 @@ class NivelAlugado(models.Model):
 # Modelo para Saques
 class Saque(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='saques', verbose_name="Usuário")
-    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Saque (USD)")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Saque (KZ)")
     iban_cliente = models.CharField(max_length=30, blank=True, null=True, verbose_name="IBAN do Cliente")
     status = models.CharField(max_length=20, default='Pendente', choices=[('Pendente', 'Pendente'), ('Aprovado', 'Aprovado'), ('Rejeitado', 'Rejeitado')], verbose_name="Status")
     data_saque = models.DateTimeField(default=timezone.now, verbose_name="Data da Solicitação")
@@ -181,7 +181,7 @@ class Saque(models.Model):
         verbose_name_plural = "Saques"
 
     def __str__(self):
-        return f"Saque de {self.valor} USD por {self.usuario.phone_number} - {self.status}"
+        return f"Saque de {self.valor} KZ por {self.usuario.phone_number} - {self.status}"
 
 # Modelo para Renda (totaliza saldos do usuário)
 class Renda(models.Model):
@@ -198,18 +198,18 @@ class Renda(models.Model):
 class Tarefa(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='tarefas_realizadas', verbose_name="Usuário")
     data_realizacao = models.DateTimeField(default=timezone.now, verbose_name="Data de Realização")
-    ganho = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ganho da Tarefa (USD)")
+    ganho = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ganho da Tarefa (KZ)")
 
     class Meta:
         verbose_name = "Tarefa Realizada"
         verbose_name_plural = "Tarefas Realizadas"
 
     def __str__(self):
-        return f"Tarefa de {self.usuario.phone_number} - {self.ganho} USD"
+        return f"Tarefa de {self.usuario.phone_number} - {self.ganho} KZ"
 
 # NOVO Modelo para Prêmios de Subsídio (substitui RoletaPremio)
 class PremioSubsidio(models.Model):
-    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Prêmio (USD)")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Prêmio (KZ)")
     chance = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Chance (0.00 a 100.00)")
     descricao = models.CharField(max_length=255, blank=True, null=True, verbose_name="Descrição")
 
@@ -219,7 +219,7 @@ class PremioSubsidio(models.Model):
         ordering = ['-chance']
 
     def __str__(self):
-        return f"{self.valor} USD ({self.chance}%)"
+        return f"{self.valor} KZ ({self.chance}%)"
 
 # Modelo para o Conteúdo da Página "Sobre"
 class Sobre(models.Model):

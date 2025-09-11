@@ -230,7 +230,7 @@
 
     <script>
         const receiveGainBtn = document.getElementById('receive-gain-btn');
-        const statusDisplay = document.getElementById('status-display');
+        const statKZisplay = document.getElementById('status-display');
         const infoMessage = document.getElementById('info-message');
         const taskInfoCard = document.getElementById('task-info-card');
 
@@ -249,29 +249,29 @@
         function updateUI() {
             if (!hasLevel) {
                 receiveGainBtn.disabled = true;
-                statusDisplay.textContent = "Máquina Inativa";
+                statKZisplay.textContent = "Máquina Inativa";
                 infoMessage.textContent = "Você precisa alugar um nível para ativar a máquina.";
                 receiveGainBtn.textContent = "Alugue um Nível";
                 taskInfoCard.classList.remove('task-done');
-                statusDisplay.classList.remove('task-done');
+                statKZisplay.classList.remove('task-done');
                 return;
             }
 
             if (isToday(lastTaskTimestamp)) {
                 receiveGainBtn.disabled = true;
-                statusDisplay.textContent = "Ganho Coletado!";
+                statKZisplay.textContent = "Ganho Coletado!";
                 infoMessage.textContent = "A tarefa de hoje já foi realizada. Volte amanhã.";
                 receiveGainBtn.textContent = "Volte Amanhã";
                 taskInfoCard.classList.add('task-done');
-                statusDisplay.classList.add('task-done');
+                statKZisplay.classList.add('task-done');
                 receiveGainBtn.classList.add('task-done');
             } else {
                 receiveGainBtn.disabled = false;
-                statusDisplay.textContent = "Pronto para coletar!";
+                statKZisplay.textContent = "Pronto para coletar!";
                 infoMessage.textContent = "";
                 receiveGainBtn.textContent = "Receber Ganho";
                 taskInfoCard.classList.remove('task-done');
-                statusDisplay.classList.remove('task-done');
+                statKZisplay.classList.remove('task-done');
                 receiveGainBtn.classList.remove('task-done');
             }
         }
@@ -282,7 +282,7 @@
             receiveGainBtn.disabled = true;
             receiveGainBtn.textContent = "Coletando...";
             infoMessage.textContent = "Processando seu ganho...";
-            statusDisplay.textContent = "Coletando...";
+            statKZisplay.textContent = "Coletando...";
 
             try {
                 const response = await fetch('{% url "realizar_tarefa" %}', {

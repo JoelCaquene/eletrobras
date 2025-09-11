@@ -84,21 +84,26 @@ TEMPLATES = [
 # Altere para o nome da sua pasta de projeto principal, 'core'
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# --------------------------------------------------------------
+# Início da seção corrigida
 # Database
-# Use PostgreSQL em produção (Heroku oferece isso)
-if os.environ.get('DATABASE_URL'):
-    # Heroku fornece uma variável de ambiente DATABASE_URL
-    DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# Configuração padrão (para desenvolvimento local)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    # Configuração local
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
+
+# Se a variável de ambiente DATABASE_URL existir, use PostgreSQL
+if os.getenv('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
+# Fim da seção corrigida
+# --------------------------------------------------------------
 
 
 # Password validation

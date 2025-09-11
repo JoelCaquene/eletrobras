@@ -6,8 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # Altere esta linha para apontar para o seu pacote de projeto principal
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CIGNA_GROUP.settings')
+    # A referência precisa ser para 'cigna_group' (em minúsculas)
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cigna_group.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

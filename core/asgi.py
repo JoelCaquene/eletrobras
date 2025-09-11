@@ -11,7 +11,7 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-# Altere esta linha para apontar para o seu pacote de projeto principal
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CIGNA_GROUP.settings')
+# A referência precisa ser para 'cigna_group' (em minúsculas)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cigna_group.settings')
 
 application = get_asgi_application()

@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
 import os
 from django.core.wsgi import get_wsgi_application
 
-# Altere esta linha para apontar para o seu pacote de projeto principal
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CIGNA_GROUP.settings')
+# A referência deve ser para 'cigna_group' (em minúsculas) para corresponder ao nome da sua pasta.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cigna_group.settings')
 
 application = get_wsgi_application()

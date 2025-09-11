@@ -1,1 +1,1 @@
-web: gunicorn CIGNA_GROUP.wsgi --log-file -
+web: gunicorn cigna_group.wsgi --log-file -

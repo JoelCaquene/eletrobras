@@ -13,6 +13,7 @@
             --primary-color: #ffeb3b;
             --accent-color: #ff4b2b;
             --success-color: #00ff00;
+            --task-done-color: #ff0000;
             --container-bg: rgba(255, 255, 255, 0.1);
             --border-color: rgba(255, 255, 255, 0.3);
             --glow-color: #ffeb3b;
@@ -82,6 +83,12 @@
             flex-direction: column;
             gap: 10px;
         }
+        
+        /* Estilo para quando a tarefa já foi realizada */
+        .task-info-card.task-done {
+            border: 1px solid var(--task-done-color);
+            box-shadow: 0 0 15px var(--task-done-color), inset 0 0 5px var(--task-done-color);
+        }
 
         .task-info-card p {
             margin: 0;
@@ -93,6 +100,12 @@
             font-weight: 600;
             color: var(--success-color);
             text-shadow: 0 0 5px var(--success-color);
+        }
+        
+        /* Estilo para a cor do status quando a tarefa já foi realizada */
+        .status-text.task-done {
+            color: var(--task-done-color);
+            text-shadow: 0 0 5px var(--task-done-color);
         }
 
         #receive-gain-btn {
@@ -109,20 +122,27 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             margin-top: 20px;
         }
-
-        #receive-gain-btn:hover:enabled {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            filter: brightness(1.1);
-        }
-
+        
+        /* Estilo para o botão desativado */
         #receive-gain-btn:disabled {
-            background-image: linear-gradient(to right, #555, #777);
+            background-image: linear-gradient(to right, #666, #999);
             color: #ccc;
             cursor: not-allowed;
             box-shadow: none;
             filter: grayscale(100%);
             transform: none;
+        }
+        
+        /* Estilo para o botão quando a tarefa já foi realizada */
+        #receive-gain-btn.task-done {
+            background-image: linear-gradient(to right, #ff6666, #cc0000);
+            color: #fff;
+        }
+
+        #receive-gain-btn:hover:enabled {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            filter: brightness(1.1);
         }
         
         .message {
@@ -177,7 +197,7 @@
         <div class="task-header">
             <h2>Ganho Diário</h2>
         </div>
-        <div class="task-info-card">
+        <div class="task-info-card" id="task-info-card">
             <p>Seu ganho diário está disponível.</p>
             <p class="status-text" id="status-display">Pronto para coletar!</p>
         </div>
@@ -212,13 +232,13 @@
         const receiveGainBtn = document.getElementById('receive-gain-btn');
         const statusDisplay = document.getElementById('status-display');
         const infoMessage = document.getElementById('info-message');
+        const taskInfoCard = document.getElementById('task-info-card');
 
-        // Esta variável DEVE ser passada do backend (Django) para funcionar corretamente.
-        // last_task_timestamp: A última vez que a tarefa foi feita (em milissegundos).
-        // has_level: True ou False, dependendo se o usuário tem um nível alugado.
         const lastTaskTimestamp = {{ last_task_timestamp|default_if_none:0 }};
         const hasLevel = {{ has_level|yesno:"true,false" }};
+
         const isToday = (timestamp) => {
+            if (!timestamp) return false;
             const date = new Date(timestamp);
             const today = new Date();
             return date.getDate() === today.getDate() &&
@@ -232,6 +252,8 @@
                 statusDisplay.textContent = "Máquina Inativa";
                 infoMessage.textContent = "Você precisa alugar um nível para ativar a máquina.";
                 receiveGainBtn.textContent = "Alugue um Nível";
+                taskInfoCard.classList.remove('task-done');
+                statusDisplay.classList.remove('task-done');
                 return;
             }
 
@@ -240,11 +262,17 @@
                 statusDisplay.textContent = "Ganho Coletado!";
                 infoMessage.textContent = "A tarefa de hoje já foi realizada. Volte amanhã.";
                 receiveGainBtn.textContent = "Volte Amanhã";
+                taskInfoCard.classList.add('task-done');
+                statusDisplay.classList.add('task-done');
+                receiveGainBtn.classList.add('task-done');
             } else {
                 receiveGainBtn.disabled = false;
                 statusDisplay.textContent = "Pronto para coletar!";
                 infoMessage.textContent = "";
                 receiveGainBtn.textContent = "Receber Ganho";
+                taskInfoCard.classList.remove('task-done');
+                statusDisplay.classList.remove('task-done');
+                receiveGainBtn.classList.remove('task-done');
             }
         }
 
@@ -257,7 +285,7 @@
             statusDisplay.textContent = "Coletando...";
 
             try {
-                const response = await fetch('/realizar-tarefa/', {
+                const response = await fetch('{% url "realizar_tarefa" %}', {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}',
@@ -268,9 +296,11 @@
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    infoMessage.textContent = "Tarefa realizada com sucesso! Ganho diário adicionado.";
-                    // Em um ambiente de produção, esta data deve vir do backend
-                    // lastTaskTimestamp = new Date().getTime(); 
+                    infoMessage.textContent = data.message;
+                    // Força a UI a atualizar para o estado 'tarefa realizada'
+                    updateUI(true);
+                    // O JavaScript não precisa saber do timestamp, a próxima atualização da página
+                    // irá buscar a data correta do backend.
                 } else {
                     infoMessage.textContent = data.message;
                 }
@@ -278,13 +308,14 @@
                 console.error('Error:', error);
                 infoMessage.textContent = "Erro ao realizar a tarefa. Tente novamente.";
             } finally {
-                // A UI é atualizada independentemente do resultado
-                updateUI();
+                // Em caso de erro, reabilita o botão para que o usuário possa tentar novamente
+                if (infoMessage.textContent.includes('Erro') || infoMessage.textContent.includes('inválido')) {
+                    updateUI();
+                }
             }
         });
 
-        // Inicializa a interface assim que a página carrega
-        updateUI();
+        document.addEventListener('DOMContentLoaded', updateUI);
     </script>
 </body>
 </html>

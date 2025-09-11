@@ -201,7 +201,7 @@ def aprovar_deposito_com_subsidio(deposito_id):
                     print(f"Convidador {convidador.username if convidador.username else convidador.phone_number} NÃO tem nível ativo. Subsídio de convite NÃO concedido.")
             else:
                 print("O usuário não foi convidado por ninguém. Nenhum subsídio de convite a ser processado.")
-        
+    
         return {'status': 'success', 'message': f'Depósito {deposito_id} aprovado e subsídio concedido, se aplicável.'}
     except Exception as e:
         print(f"Erro CRÍTICO ao aprovar depósito {deposito_id} e conceder subsídio: {e}")
@@ -304,21 +304,20 @@ def saque_view(request):
 @login_required
 def tarefa_view(request):
     usuario = request.user
-    niveis_alugados_ativos = NivelAlugado.objects.filter(usuario=usuario, is_active=True)
-    has_level = niveis_alugados_ativos.exists()
+    
+    # Verifica se o usuário tem um nível alugado ativo
+    has_level = NivelAlugado.objects.filter(usuario=usuario, is_active=True).exists()
     
     last_task_timestamp = None
-    if has_level:
-        # Pega a data da última tarefa do primeiro nível ativo.
-        # Se um usuário puder ter múltiplos níveis, você pode precisar de uma lógica mais complexa.
-        # Mas para um nível por usuário, isso funciona bem.
-        ultima_tarefa = niveis_alugados_ativos.first().ultima_tarefa
-        if ultima_tarefa:
-            last_task_timestamp = int(ultima_tarefa.timestamp() * 1000)
+    # Pega o timestamp da última tarefa realizada
+    last_task = Tarefa.objects.filter(usuario=usuario).order_by('-data_realizacao').first()
+    if last_task:
+        # Converte a data para timestamp em milissegundos para uso no JavaScript
+        last_task_timestamp = int(last_task.data_realizacao.timestamp() * 1000)
 
     context = {
+        'last_task_timestamp': last_task_timestamp,
         'has_level': has_level,
-        'last_task_timestamp': last_task_timestamp
     }
     return render(request, 'tarefa.html', context)
 
@@ -330,32 +329,43 @@ def realizar_tarefa(request):
     niveis_alugados_ativos = NivelAlugado.objects.filter(usuario=usuario, is_active=True)
 
     if not niveis_alugados_ativos.exists():
-        return JsonResponse({'status': 'error', 'message': 'Você não tem um nível ativo para realizar a tarefa.'}, status=403)
+        return JsonResponse({'status': 'error', 'message': 'Você não tem um nível alugado para realizar a tarefa.'}, status=403)
 
-    agora = timezone.now()
-    total_ganho_tarefas = Decimal('0.00')
+    # Verifica se a tarefa já foi realizada hoje
+    hoje = timezone.now().date()
+    tarefa_realizada_hoje = Tarefa.objects.filter(
+        usuario=usuario,
+        data_realizacao__date=hoje
+    ).exists()
 
-    for nivel_alugado in niveis_alugados_ativos:
-        if nivel_alugado.ultima_tarefa and (agora - nivel_alugado.ultima_tarefa) < timedelta(hours=24):
-            continue 
-        
-        try:
-            renda_diaria = nivel_alugado.nivel.ganho_diario
-            usuario.saldo_disponivel += renda_diaria
-            nivel_alugado.ultima_tarefa = agora
-            nivel_alugado.save()
-            total_ganho_tarefas += renda_diaria
-
-        except Exception as e:
-            print(f"Erro ao processar tarefa para nível {nivel_alugado.nivel.nome_nivel}: {e}")
-            return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro interno ao processar um dos níveis: {e}'}, status=500)
-
-    usuario.save()
+    if tarefa_realizada_hoje:
+        return JsonResponse({'status': 'error', 'message': 'A tarefa diária já foi realizada. Volte amanhã.'}, status=403)
     
-    if total_ganho_tarefas > 0:
-        return JsonResponse({'status': 'success', 'message': f'Renda diária total de {total_ganho_tarefas:.2f} USD adicionada com sucesso.'})
-    else:
-        return JsonResponse({'status': 'info', 'message': 'Todas as tarefas já foram realizadas nas últimas 24 horas ou você não tem níveis ativos para tarefas.'})
+    try:
+        with transaction.atomic():
+            total_ganho_dia = Decimal('0.00')
+            # Processa a tarefa para todos os níveis ativos
+            for nivel_alugado in niveis_alugados_ativos:
+                ganho_diario = nivel_alugado.nivel.ganho_diario
+                
+                # Adiciona o ganho ao saldo geral e ao saldo disponível para saque
+                usuario.saldo += ganho_diario
+                usuario.saldo_disponivel += ganho_diario
+                total_ganho_dia += ganho_diario
+                
+            usuario.save()
+
+            # Cria um único registro de tarefa para o dia
+            Tarefa.objects.create(
+                usuario=usuario,
+                ganho=total_ganho_dia
+            )
+            
+        return JsonResponse({'status': 'success', 'message': f'Tarefa realizada com sucesso! Você ganhou {total_ganho_dia:.2f} USD.'})
+
+    except Exception as e:
+        print(f"Erro ao processar tarefa: {e}")
+        return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro interno ao processar a tarefa: {e}'}, status=500)
 
 @login_required
 def nivel_view(request):

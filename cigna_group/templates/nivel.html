@@ -6,146 +6,226 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Níveis - Cigna Group</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+        :root {
+            --cor-fundo-principal: #0b0f20;
+            --cor-card-fundo: rgba(26, 32, 54, 0.7);
+            --cor-borda-card: #4c5a7d;
+            --cor-destaque-1: #00e6ff;
+            --cor-destaque-2: #ff007f;
+            --cor-texto-claro: #e0e6f6;
+            --cor-texto-escuro: #c4cde0;
+            --cor-botao-comprar: #2ecc71;
+            --cor-shadow-card: 0 10px 40px rgba(0, 0, 0, 0.5);
+            --cor-shadow-botao: 0 8px 30px rgba(46, 204, 113, 0.4);
+        }
+
         body {
-            background-color: #0c0b2d;
+            background-color: var(--cor-fundo-principal);
             background-image: url('{% static "cigna_group/images/fundo_azul_raios.jpg" %}');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--cor-texto-claro);
+            font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
             min-height: 100vh;
             text-align: center;
-            padding-bottom: 80px; /* Espaço para o footer fixo */
+            padding-bottom: 80px;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(0, 230, 255, 0.1), transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.1), transparent 50%);
+            z-index: -1;
         }
 
         .header {
             width: 100%;
             padding: 20px;
-            color: #ffeb3b;
-            text-shadow: 0 0 5px #ffeb3b;
-            font-size: 1.5em;
+            color: var(--cor-destaque-1);
+            text-shadow: 0 0 10px var(--cor-destaque-1);
+            font-size: 1.8em;
             position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-sizing: border-box;
+            background: rgba(11, 15, 32, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--cor-borda-card);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
 
         .logout-btn {
-            background-color: #ff416c;
+            background: var(--cor-destaque-2);
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 30px;
             text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(255, 65, 108, 0.4);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 0, 127, 0.4);
+            letter-spacing: 1px;
         }
 
         .logout-btn:hover {
-            background-color: #e63900;
-            transform: translateY(-2px);
+            background-color: #ff3399;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 0, 127, 0.6);
         }
 
         .levels-display-container {
             width: 90%;
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 30px 20px;
+            background: var(--cor-card-fundo);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            box-shadow: var(--cor-shadow-card);
+            border: 2px solid var(--cor-borda-card);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px; /* Espaçamento entre os cartões de nível */
+            gap: 25px;
+            animation: containerFadeIn 1s ease-out;
+        }
+
+        @keyframes containerFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .levels-display-container h2 {
-            color: #ffeb3b;
-            text-shadow: 0 0 5px #ffeb3b;
+            color: var(--cor-destaque-1);
+            text-shadow: 0 0 10px var(--cor-destaque-1);
             margin-bottom: 15px;
-            font-size: 1.8em;
+            font-size: 2.2em;
+            letter-spacing: 1.5px;
+            font-weight: 700;
         }
 
+        /* Novo estilo de cartão de nível */
         .level-card-item {
-            background-image: linear-gradient(160deg, #1a2a6c, #b21f1f, #fdbb2d);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            width: 90%;
-            max-width: 400px;
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: linear-gradient(145deg, rgba(35, 43, 70, 0.8), rgba(15, 20, 36, 0.8));
+            color: var(--cor-texto-claro);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            width: 100%;
+            max-width: 450px;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card-item::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(0, 230, 255, 0.2), transparent);
+            border-radius: 50%;
+            z-index: 0;
+            transition: all 0.5s ease;
         }
 
         .level-card-item:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            border-color: rgba(0, 230, 255, 0.5);
+        }
+        
+        .level-card-item:hover::before {
+            transform: scale(1.2);
+            opacity: 0.8;
         }
 
         .level-card-item-image, .level-card-item-image-placeholder {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 15px;
-            border: 5px solid #ffd700;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), inset 0 0 12px rgba(255, 215, 0, 0.4);
+            margin-bottom: 20px;
+            border: 6px solid var(--cor-destaque-1);
+            box-shadow: 0 0 25px rgba(0, 230, 255, 0.8), inset 0 0 15px rgba(0, 230, 255, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .level-card-item:hover .level-card-item-image,
+        .level-card-item:hover .level-card-item-image-placeholder {
+            transform: scale(1.1);
         }
 
         .level-card-item h3 {
             margin-top: 0;
-            font-size: 1.8em;
-            color: #ffd700;
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+            font-size: 2.2em;
+            color: var(--cor-destaque-1);
+            text-shadow: 0 0 8px var(--cor-destaque-1);
+            letter-spacing: 1.5px;
+            font-weight: 700;
         }
 
         .level-card-item p {
-            margin: 8px 0;
-            font-size: 1.2em;
-        }
-
-        .level-card-item .buy-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
+            margin: 10px 0;
             font-size: 1.1em;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
-            margin-top: 15px;
+            color: var(--cor-texto-escuro);
         }
 
-        .level-card-item .buy-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
+        .level-card-item p strong {
+            color: #fff;
+        }
+
+        .buy-btn {
+            background: linear-gradient(45deg, var(--cor-botao-comprar), #00b894);
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: var(--cor-shadow-botao);
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(45deg, #00b894, var(--cor-botao-comprar));
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 35px rgba(46, 204, 113, 0.6);
         }
 
         .no-levels-message {
-            color: #ffeb3b;
-            font-size: 1.1em;
-            margin-top: 20px;
-            text-shadow: 0 0 3px rgba(255, 235, 59, 0.5);
+            color: var(--cor-destaque-1);
+            font-size: 1.2em;
+            margin-top: 30px;
+            text-shadow: 0 0 5px rgba(0, 230, 255, 0.5);
         }
 
-        /* Footer de navegação */
+        /* Rodapé de navegação */
         .footer-nav {
             position: fixed;
             bottom: 0;
@@ -178,46 +258,43 @@
         }
 
         .footer-item:hover {
-            color: #ffeb3b;
+            color: var(--cor-destaque-1);
             transform: translateY(-3px);
         }
 
         /* Responsividade */
         @media (max-width: 600px) {
             .levels-display-container {
-                padding: 15px;
-                gap: 15px;
+                padding: 20px 15px;
+                gap: 20px;
+                margin-top: 20px;
             }
 
             .level-card-item {
-                padding: 15px;
+                padding: 25px;
             }
 
             .level-card-item-image, .level-card-item-image-placeholder {
-                width: 90px;
-                height: 90px;
+                width: 120px;
+                height: 120px;
             }
 
             .level-card-item h3 {
-                font-size: 1.5em;
+                font-size: 1.8em;
             }
 
             .level-card-item p {
-                font-size: 1.1em;
-            }
-
-            .level-card-item .buy-btn {
-                padding: 10px 20px;
                 font-size: 1em;
             }
 
-            .header {
-                font-size: 1.4em;
-                padding: 15px;
+            .buy-btn {
+                padding: 12px 25px;
+                font-size: 1.1em;
             }
-            .logout-btn {
-                padding: 6px 12px;
-                font-size: 0.9em;
+
+            .header {
+                font-size: 1.5em;
+                padding: 15px;
             }
         }
     </style>
@@ -236,13 +313,13 @@
                     {% if nivel.imagem %}
                         <img src="{{ nivel.imagem.url }}" alt="Imagem do Nível {{ nivel.nome_nivel }}" class="level-card-item-image">
                     {% else %}
-                        <img src="https://placehold.co/100x100/CCCCCC/FFFFFF?text=Sem%20Imagem" alt="Nível sem imagem" class="level-card-item-image-placeholder">
+                        <img src="https://placehold.co/150x150/1a2a6c/fff?text={{ nivel.nome_nivel|slice:':4' }}" alt="Nível sem imagem" class="level-card-item-image-placeholder">
                     {% endif %}
                     <h3>{{ nivel.nome_nivel }}</h3>
-                    <p>Depósito Mínimo: USD {{ nivel.deposito_minimo }}</p>
-                    <p>Ganho Diário: USD {{ nivel.ganho_diario }}</p>
-                    <p>Ganho Mensal: USD {{ nivel.ganho_mensal }}</p>
-                    <p>Ciclo: {{ nivel.ciclo_dias }} dias</p>
+                    <p><strong>Depósito Mínimo:</strong> USD {{ nivel.deposito_minimo }}</p>
+                    <p><strong>Ganho Diário:</strong> USD {{ nivel.ganho_diario }}</p>
+                    <p><strong>Ganho Mensal:</strong> USD {{ nivel.ganho_mensal }}</p>
+                    <p><strong>Ciclo:</strong> {{ nivel.ciclo_dias }} dias</p>
                     <button class="buy-btn" data-id="{{ nivel.id }}">Alugar</button>
                 </div>
             {% endfor %}
@@ -282,7 +359,7 @@
                 button.addEventListener('click', function() {
                     const nivelId = this.getAttribute('data-id');
                     
-                    fetch('/alugar-nivel/', { // URL CORRIGIDA: usei o traço (-) em vez do sublinhado (_)
+                    fetch('/alugar-nivel/', { 
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -294,7 +371,7 @@
                     .then(data => {
                         if (data.status === 'success') {
                             alert(data.message);
-                            window.location.reload(); // Recarregar a página para atualizar o estado
+                            window.location.reload(); 
                         } else {
                             alert(data.message);
                         }

@@ -19,6 +19,7 @@ import pytz
 import random
 from decimal import Decimal
 from django.contrib.auth.forms import PasswordChangeForm 
+from collections import defaultdict
 
 def cadastro_view(request):
     config = Config.objects.first()
@@ -416,23 +417,41 @@ def alugar_nivel(request):
 def equipa_view(request):
     usuario_logado = request.user
     
-    link_convite = request.build_absolute_uri(f'/cadastro/?convite={usuario_logado.invitation_code}')
-    
+    # Busca os membros da equipe que se referem ao usuário logado
     membros_equipa = Usuario.objects.filter(inviter=usuario_logado) 
+    
+    # Dicionário para armazenar a contagem de membros por nível
+    niveis_contagem = defaultdict(int)
     
     lista_membros = []
     for membro in membros_equipa:
-        tem_nivel_ativo = NivelAlugado.objects.filter(usuario=membro, is_active=True).exists()
+        # Tenta obter o nível alugado ativo do membro
+        nivel_alugado_do_membro = NivelAlugado.objects.filter(usuario=membro, is_active=True).first()
         
+        if nivel_alugado_do_membro:
+            # Se tiver nível, adiciona na contagem do nível correspondente
+            nivel_numero = nivel_alugado_do_membro.nivel.numero
+            niveis_contagem[nivel_numero] += 1
+            nivel_display = f"Nível {nivel_numero}"
+        else:
+            # Se não tiver nível ativo, trata como inativo
+            nivel_display = "Nível Inativo"
+            
         lista_membros.append({
             'nome': membro.username if membro.username else membro.phone_number, 
             'numero': membro.phone_number,
-            'tem_nivel_ativo': tem_nivel_ativo
+            'nivel': nivel_alugado_do_membro.nivel if nivel_alugado_do_membro else None,
+            'nivel_display': nivel_display
         })
 
+    total_membros = len(lista_membros)
+    link_convite = request.build_absolute_uri(f'/cadastro/?convite={usuario_logado.invitation_code}')
+    
     context = {
         'link_convite': link_convite,
-        'equipa_membros': lista_membros
+        'equipa_membros': lista_membros,
+        'total_membros': total_membros,
+        'niveis_contagem': dict(niveis_contagem) # Converte para dict para uso no template
     }
     
     return render(request, 'equipa.html', context)

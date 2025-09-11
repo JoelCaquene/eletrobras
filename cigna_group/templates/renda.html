@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renda - Cigna Group</title>
+    <style>
+        body {
+            background-color: #0c0b2d;
+            background-image: url('{% static "cigna_group/images/fundo_azul_raios.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            text-align: center;
+            padding-bottom: 80px; /* Espaço para o footer fixo */
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px;
+            color: #ffeb3b;
+            text-shadow: 0 0 5px #ffeb3b;
+            font-size: 1.5em;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .logout-btn {
+            background-color: #ff416c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 65, 108, 0.4);
+        }
+
+        .logout-btn:hover {
+            background-color: #e63900;
+            transform: translateY(-2px);
+        }
+
+        .income-container {
+            width: 90%;
+            max-width: 650px; /* Aumentado para melhor visualização dos itens */
+            background: rgba(255, 255, 255, 0.05); /* Fundo sutil */
+            backdrop-filter: blur(8px); /* Efeito de blur */
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6); /* Sombra mais pronunciada */
+            padding: 25px; /* Mais padding */
+            margin-top: 30px;
+            margin-bottom: 100px; /* Espaço para o rodapé */
+            display: grid; /* Usando Grid para o layout */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Colunas flexíveis */
+            gap: 20px; /* Espaçamento entre os cartões */
+            justify-content: center; /* Centraliza os itens no grid */
+        }
+
+        .income-container h2 {
+            grid-column: 1 / -1; /* Ocupa todas as colunas no grid */
+            color: #ffeb3b;
+            text-shadow: 0 0 10px #ffeb3b;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+
+        .income-item {
+            background-image: linear-gradient(145deg, #1a2a6c, #0d1a33); /* Gradiente mais escuro e elegante */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .income-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        .income-item strong {
+            color: #ffeb3b; /* Amarelo para os títulos */
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+        }
+        
+        .income-item .icon {
+            font-size: 2.5em; /* Tamanho dos ícones */
+            margin-bottom: 10px;
+            color: #00bcd4; /* Azul ciano para os ícones */
+            text-shadow: 0 0 8px rgba(0, 188, 212, 0.7);
+        }
+
+        .value-display {
+            font-size: 1.6em; /* Tamanho maior para os valores */
+            font-weight: bold;
+            margin-top: 5px;
+            color: #ffffff; /* Cor padrão para valores */
+        }
+
+        .positive-value {
+            color: #00ff00; /* Verde vibrante para saldo disponível */
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+        }
+        
+        /* Cores específicas para os valores */
+        .deposits-value { color: #8bc34a; } /* Verde mais suave */
+        .subsidy-value { color: #ffeb3b; } /* Amarelo */
+        .withdrawn-value { color: #ff5722; } /* Laranja avermelhado */
+
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 0.85em;
+            transition: color 0.3s, transform 0.2s;
+            flex: 1;
+        }
+
+        .footer-item img {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 7px #fff);
+        }
+
+        .footer-item:hover {
+            color: #ffeb3b;
+            transform: translateY(-3px);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .income-container {
+                grid-template-columns: 1fr; /* Uma coluna em telas menores */
+                padding: 20px;
+            }
+
+            .income-item {
+                padding: 18px;
+            }
+
+            .income-item strong {
+                font-size: 1em;
+            }
+
+            .income-item .icon {
+                font-size: 2em;
+            }
+
+            .value-display {
+                font-size: 1.4em;
+            }
+
+            .header {
+                font-size: 1.3em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .income-container {
+                margin-top: 15px;
+                padding: 15px;
+            }
+            .income-item {
+                padding: 15px;
+            }
+            .income-item .icon {
+                font-size: 1.8em;
+            }
+            .value-display {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    {# Font Awesome para ícones #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Renda</h1>
+        <a href="{% url 'saida' %}" class="logout-btn">Sair</a>
+    </div>
+
+    <div class="income-container">
+        {# Título principal da seção #}
+        <h2>Visão Geral da Renda</h2>
+
+        <div class="income-item">
+            <i class="fas fa-chart-line icon"></i> {# Ícone para Nível do Cliente #}
+            <strong>Nível do Cliente:</strong>
+            <span class="value-display">{{ nivel_cliente }}</span>
+        </div>
+        <div class="income-item">
+            <i class="fas fa-money-check-alt icon"></i> {# Ícone para Depósitos #}
+            <strong>Depósitos Aprovados:</strong>
+            <span class="value-display deposits-value">{{ depositos_aprovados|floatformat:2 }} USD</span>
+        </div>
+        <div class="income-item">
+            <i class="fas fa-wallet icon"></i> {# Ícone para Saldo Disponível #}
+            <strong>Saldo Disponível:</strong>
+            <span class="value-display positive-value">{{ saldo_disponivel|floatformat:2 }} USD</span>
+        </div>
+        <div class="income-item">
+            <i class="fas fa-hand-holding-usd icon"></i> {# Ícone para Subsídios #}
+            <strong>Saldo de Subsídios:</strong>
+            <span class="value-display subsidy-value">{{ saldo_subsidio|floatformat:2 }} USD</span>
+        </div>
+        <div class="income-item">
+            <i class="fas fa-exchange-alt icon"></i> {# Ícone para Total Sacado #}
+            <strong>Total Sacado:</strong>
+            <span class="value-display withdrawn-value">{{ total_sacado|floatformat:2 }} USD</span>
+        </div>
+    </div>
+
+    <nav class="footer-nav">
+        <a href="{% url 'menu' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_menu.png' %}" alt="Menu">
+            <span>MENU</span>
+        </a>
+        <a href="{% url 'nivel' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_nivel.png' %}" alt="Nivel">
+            <span>NÍVEL</span>
+        </a>
+        <a href="{% url 'renda' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_renda.png' %}" alt="Renda">
+            <span>RENDA</span>
+        </a>
+        <a href="{% url 'sobre' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_sobre.png' %}" alt="Sobre">
+            <span>SOBRE</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_perfil.png' %}" alt="Perfil">
+            <span>PERFIL</span>
+        </a>
+    </nav>
+</body>
+</html>

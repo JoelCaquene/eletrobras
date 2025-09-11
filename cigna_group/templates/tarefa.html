@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Máquina - Cigna Group</title>
+    <style>
+        body {
+            background-color: #0c0b2d;
+            background-image: url('{% static "cigna_group/images/fundo_azul_raios.jpg" %}'); /* Use o caminho da sua imagem */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Altera para alinhar ao topo */
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px;
+            color: #ffeb3b;
+            text-shadow: 0 0 5px #ffeb3b;
+            font-size: 1.5em;
+        }
+
+        .machine-container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            margin-top: 40px; /* Aumenta a margem superior para subir a máquina */
+        }
+
+        .machine-header h2 {
+            margin: 0 0 10px;
+            font-size: 1.8em;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px #ffeb3b;
+        }
+        
+        .panel-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #77ff77;
+            box-shadow: 0 0 10px #77ff77, inset 0 0 5px #77ff77;
+            padding: 15px;
+            border-radius: 10px;
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .panel-display p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+
+        #timer {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        #production-btn {
+            background-image: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+        }
+
+        #production-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+            filter: grayscale(100%);
+        }
+
+        #production-btn:hover:enabled {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff416c;
+        }
+        
+        .message {
+            margin-top: 15px;
+            font-size: 1em;
+            color: #ffeb3b;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ffeb3b;
+        }
+
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 0.8em;
+            transition: color 0.3s;
+        }
+
+        .footer-item img {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 5px #fff);
+        }
+
+        .footer-item:hover {
+            color: #ffeb3b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Tarefa</h1>
+    </div>
+
+    <div class="machine-container">
+        <div class="machine-header">
+            <h2>Máquina de Produção</h2>
+        </div>
+        <div class="machine-body">
+            <div class="panel-display">
+                <p>Status: <span id="status">Pronta para produzir</span></p>
+                <p>Próxima Produção em:</p>
+                <p id="timer">--:--:--</p>
+            </div>
+            <button id="production-btn">Produção</button>
+            <div class="message" id="info-message"></div>
+        </div>
+    </div>
+
+    <nav class="footer-nav">
+        <a href="{% url 'menu' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_menu.png' %}" alt="Menu">
+            <span>MENU</span>
+        </a>
+        <a href="{% url 'nivel' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_nivel.png' %}" alt="Nivel">
+            <span>NÍVEL</span>
+        </a>
+        <a href="{% url 'renda' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_renda.png' %}" alt="Renda">
+            <span>RENDA</span>
+        </a>
+        <a href="{% url 'sobre' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_sobre.png' %}" alt="Sobre">
+            <span>SOBRE</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_perfil.png' %}" alt="Perfil">
+            <span>PERFIL</span>
+        </a>
+    </nav>
+
+    <script>
+        const productionBtn = document.getElementById('production-btn');
+        const timerDisplay = document.getElementById('timer');
+        const statusDisplay = document.getElementById('status');
+        const infoMessage = document.getElementById('info-message');
+
+        const cooldownTime = 24 * 60 * 60 * 1000; // 24 horas em milissegundos
+        let lastProductionTime = localStorage.getItem('lastProductionTime') || 0;
+        
+        // Esta variável deve ser passada do backend (Django)
+        // Certifique-se de que sua view passe 'has_level' para o template
+        let hasLevel = {{ has_level|yesno:"true,false" }}; 
+
+        function updateUI() {
+            if (!hasLevel) {
+                productionBtn.disabled = true;
+                infoMessage.textContent = "Você precisa alugar um nível para usar a máquina.";
+                statusDisplay.textContent = "Inativa";
+                timerDisplay.textContent = "--:--:--";
+                return;
+            }
+            
+            infoMessage.textContent = "";
+            const currentTime = new Date().getTime();
+            const elapsedTime = currentTime - lastProductionTime;
+            const remainingTime = cooldownTime - elapsedTime;
+
+            if (remainingTime <= 0) {
+                timerDisplay.textContent = "00:00:00";
+                productionBtn.disabled = false;
+                statusDisplay.textContent = "Pronta para produzir";
+                productionBtn.textContent = "Produção";
+            } else {
+                const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                const formatTime = (time) => String(time).padStart(2, '0');
+
+                timerDisplay.textContent = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+                productionBtn.disabled = true;
+                statusDisplay.textContent = "Em produção...";
+                productionBtn.textContent = "Produzindo...";
+            }
+        }
+
+        productionBtn.addEventListener('click', async () => {
+            if (!hasLevel) {
+                infoMessage.textContent = "Você precisa alugar um nível para usar a máquina.";
+                return;
+            }
+
+            try {
+                const response = await fetch('/realizar-tarefa/', { 
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Simula a lógica do backend.
+                    lastProductionTime = new Date().getTime();
+                    localStorage.setItem('lastProductionTime', lastProductionTime);
+                    infoMessage.textContent = "Tarefa realizada! Renda diária adicionada.";
+                } else {
+                    infoMessage.textContent = data.message;
+                }
+            } catch (error) {
+                infoMessage.textContent = "Erro ao realizar a tarefa. Tente novamente.";
+            }
+            
+            updateUI();
+        });
+
+        setInterval(updateUI, 1000);
+        updateUI();
+    </script>
+</body>
+</html>

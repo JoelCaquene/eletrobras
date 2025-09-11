@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cigna Group - Prêmios de Subsídios</title>
+    {% load static %} {# Adicionado para carregar arquivos estáticos #}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        :root {
+            --cor-fundo: #0c0e18;
+            --cor-primaria: #ff3366;
+            --cor-secundaria: #33ccff;
+            --cor-texto: #ffffff;
+            --cor-texto-claro: #dddddd;
+            --cor-card: rgba(255, 255, 255, 0.1);
+            --borda-card: rgba(255, 255, 255, 0.2);
+            --sombra-card: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            /* Corrigido: Removido o placeholder de imagem de fundo do CSS. */
+            /* Se desejar uma imagem de fundo, por favor, adicione-a como um `{% static 'caminho/para/sua/imagem.jpg' %}` */
+            /* ou a URL válida do Cloudinary diretamente aqui. */
+            /* Exemplo: background-image: url('{% static 'cigna_group/images/background_premios.jpg' %}'); */
+            /* OU background-image: url('SUA_URL_REAL_DO_CLOUDINARY.jpg'); */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            margin-top: 80px;
+            margin-bottom: 100px; /* Adicionado espaço para o novo rodapé */
+        }
+
+        header {
+            width: 100%;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--cor-fundo);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cor-primaria);
+            text-shadow: 0 0 5px var(--cor-primaria);
+        }
+
+        .card-premio {
+            background: var(--cor-card);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid var(--borda-card);
+            box-shadow: var(--sombra-card);
+        }
+
+        .card-premio h2 {
+            font-size: 1.8rem;
+            color: var(--cor-secundaria);
+            text-shadow: 0 0 5px var(--cor-secundaria);
+            margin-bottom: 10px;
+        }
+
+        .card-premio p {
+            font-size: 1rem;
+            color: var(--cor-texto-claro);
+        }
+
+        .premio-valor {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #4CAF50; 
+            text-shadow: 0 0 10px #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-abrir {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--cor-fundo);
+            background: linear-gradient(45deg, var(--cor-primaria), var(--cor-secundaria));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 51, 102, 0.5);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            margin-top: 20px;
+        }
+
+        .btn-abrir:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 51, 102, 0.7);
+        }
+        
+        .loading {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid var(--cor-primaria);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .message.error {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+        }
+
+        /* Rodapé de Navegação */
+        .footer-nav {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--cor-texto);
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: color 0.3s;
+        }
+
+        .footer-item img {
+            width: 24px; /* Tamanho dos ícones no rodapé */
+            height: 24px;
+            margin-bottom: 5px;
+        }
+
+        .footer-item:hover {
+            color: var(--cor-secundaria);
+        }
+    </style>
+    {# CORRIGIDO: Removido o link para Font Awesome via CDN que estava causando o erro CORS e 403 #}
+</head>
+<body>
+    <header>
+        <div class="header-title">Prêmios de Subsídios</div>
+    </header>
+
+    <div class="container">
+        <h1>Abra e Ganhe!</h1>
+        <p>Clique no botão para tentar a sua sorte e ganhar prêmios de subsídios!</p>
+        
+        <div class="card-premio" id="premio-card">
+            <h2>Prêmio de Subsídio</h2>
+            <p id="premio-valor" class="premio-valor">...</p>
+            <p id="premio-mensagem">Clique para abrir!</p>
+        </div>
+
+        <button class="btn-abrir" id="btn-abrir">Abrir Prêmio</button>
+        <div class="loading" id="loading"></div>
+        <div id="status-message" class="message"></div>
+    </div>
+
+    {# Rodapé de Navegação #}
+    <nav class="footer-nav">
+        <a href="{% url 'menu' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_menu.png' %}" alt="Menu">
+            <span>MENU</span>
+        </a>
+        <a href="{% url 'nivel' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_nivel.png' %}" alt="Nivel">
+            <span>NÍVEL</span>
+        </a>
+        <a href="{% url 'renda' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_renda.png' %}" alt="Renda">
+            <span>RENDA</span>
+        </a>
+        <a href="{% url 'sobre' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_sobre.png' %}" alt="Sobre">
+            <span>SOBRE</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_perfil.png' %}" alt="Perfil">
+            <span>PERFIL</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAbrir = document.getElementById('btn-abrir');
+            const loading = document.getElementById('loading');
+            const statusMessage = document.getElementById('status-message');
+            const premioValor = document.getElementById('premio-valor');
+            const premioMensagem = document.getElementById('premio-mensagem');
+            const premioCard = document.getElementById('premio-card');
+
+            btnAbrir.addEventListener('click', function() {
+                btnAbrir.disabled = true;
+                btnAbrir.textContent = 'Abrindo...';
+                loading.style.display = 'block';
+                statusMessage.style.display = 'none';
+                
+                premioValor.textContent = '...';
+                premioMensagem.textContent = 'Abrindo prêmio...';
+                premioCard.style.animation = 'none';
+
+                fetch('/abrir-premio/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => Promise.reject(errorData));
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loading.style.display = 'none';
+                    btnAbrir.disabled = false;
+                    btnAbrir.textContent = 'Abrir Prêmio';
+
+                    if (data.status === 'success') {
+                        statusMessage.textContent = data.message;
+                        statusMessage.className = 'message success';
+                        statusMessage.style.display = 'block';
+                        
+                        premioValor.textContent = `${data.winning_value.toFixed(2)} USD`;
+                        premioMensagem.textContent = 'Prêmio Ganho!';
+                        premioCard.style.animation = 'pulse 1.5s infinite';
+
+                    } else {
+                        statusMessage.textContent = data.message;
+                        statusMessage.className = 'message error';
+                        statusMessage.style.display = 'block';
+
+                        premioValor.textContent = '...';
+                        premioMensagem.textContent = 'Nenhum prêmio.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    loading.style.display = 'none';
+                    btnAbrir.disabled = false;
+                    btnAbrir.textContent = 'Abrir Prêmio';
+                    statusMessage.textContent = `Erro: ${error.message || 'Ocorreu um erro interno.'}`;
+                    statusMessage.className = 'message error';
+                    statusMessage.style.display = 'block';
+                });
+            });
+        });
+
+        // Função auxiliar para obter o CSRF token, se o JavaScript estiver em um arquivo separado
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+body {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    font-family: Arial, sans-serif;
+    margin: 0 !important; /* Força a remoção de todas as margens do corpo */
+    padding: 0 !important;
+}
+
+.header {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #34495e;
+    color: #f1c40f;
+    margin-bottom: 0 !important; /* Força a remoção da margem inferior */
+}
+
+.header h1 {
+    font-size: 2em;
+    margin: 0;
+}
+
+.logout-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.main-container {
+    padding-top: 0 !important; /* Força a remoção do padding superior */
+    margin-top: 0 !important; /* Força a remoção da margem superior */
+}
+
+.levels-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 5px;
+}
+
+.level-card {
+    background-color: rgba(44, 62, 80, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 45%;
+    max-width: 200px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.level-card:hover {
+    transform: translateY(-5px);
+}
+
+.level-header {
+    background-color: #34495e;
+    padding: 10px;
+}
+
+.level-header h2 {
+    margin: 0;
+    color: #f1c40f;
+    font-size: 1.2em;
+}
+
+.level-image {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.level-details {
+    padding: 10px;
+    text-align: left;
+    font-size: 0.8em;
+}
+
+.level-details p {
+    margin: 5px 0;
+    border-bottom: 1px solid #4a6681;
+    padding-bottom: 3px;
+}
+
+.level-details p:last-child {
+    border-bottom: none;
+}
+
+.level-actions {
+    padding: 10px;
+}
+
+.buy-btn {
+    display: block;
+    width: 90%;
+    margin: 0 auto;
+    padding: 8px 15px;
+    background-color: #27ae60;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.buy-btn:hover {
+    background-color: #219d53;
+}
+
+/* Estilos do rodapé */
+.footer-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #34495e;
+    padding: 10px 0;
+}
+
+.footer-item {
+    text-align: center;
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 0.8em;
+}
+
+.footer-item img {
+    width: 24px;
+    height: 24px;
+}

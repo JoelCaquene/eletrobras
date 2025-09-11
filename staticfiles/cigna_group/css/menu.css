@@ -1,0 +1,325 @@
+/* cigna_group/static/cigna_group/css/menu.css */
+
+body {
+    background-color: #0c0b2d;
+    background-image: url('../images/fundo_azul_raios.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    text-align: center;
+    padding-bottom: 80px; /* Espaço para o footer fixo */
+}
+
+.header {
+    width: 100%;
+    padding: 20px;
+    color: #ffeb3b; /* Amarelo vibrante para títulos */
+    text-shadow: 0 0 5px #ffeb3b, 0 0 10px rgba(255, 235, 59, 0.5); /* Sombra para destaque */
+    font-size: 1.8em; /* Tamanho maior para o título principal */
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box; /* Inclui padding na largura */
+}
+
+.header h1 {
+    margin: 0;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.logout-btn {
+    background-color: #ff416c; /* Vermelho vibrante */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(255, 65, 108, 0.4);
+}
+
+.logout-btn:hover {
+    background-color: #e63900;
+    transform: translateY(-2px);
+}
+
+.carousel-container {
+    width: 95%;
+    max-width: 700px;
+    height: 180px; /* Altura fixa para o carrossel */
+    margin: 20px auto;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+#image-carousel {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 1s ease-in-out; /* Transição mais suave */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Botões se ajustam */
+    gap: 15px; /* Espaçamento entre os botões */
+    width: 95%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05); /* Fundo sutil para o grid */
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    padding: 15px 10px;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-image 0.5s ease;
+    background-image: linear-gradient(135deg, rgba(70, 0, 150, 0.8), rgba(0, 70, 150, 0.8)); /* Gradiente padrão */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9em; /* Tamanho da fonte menor para se adaptar */
+    min-height: 80px; /* Altura mínima para os botões */
+}
+
+/* Cores específicas para cada botão (ajuste conforme necessário) */
+.grid-item:nth-child(1) { background-image: linear-gradient(135deg, #FFC300, #FF5733); } /* Depósito */
+.grid-item:nth-child(2) { background-image: linear-gradient(135deg, #00C9FF, #92FE9D); } /* Saque */
+.grid-item:nth-child(3) { background-image: linear-gradient(135deg, #C70039, #900C3F); } /* Tarefa */
+.grid-item:nth-child(4) { background-image: linear-gradient(135deg, #8A2BE2, #A020F0); } /* Nível */
+.grid-item:nth-child(5) { background-image: linear-gradient(135deg, #FF69B4, #CD5C5C); } /* Equipa */
+.grid-item:nth-child(6) { background-image: linear-gradient(135deg, #4682B4, #5F9EA0); } /* Sobre */
+.grid-item:nth-child(7) { background-image: linear-gradient(135deg, #32CD32, #ADFF2F); } /* Perfil */
+.grid-item:nth-child(8) { background-image: linear-gradient(135deg, #FFD700, #FFA500); } /* Roleta da Sorte */
+
+
+.grid-item:hover {
+    transform: translateY(-5px) scale(1.05); /* Efeito de elevação e zoom */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 255, 255, 0.4); /* Sombra mais intensa */
+}
+
+.grid-item img {
+    width: 40px; /* Tamanho do ícone */
+    height: 40px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8)); /* Sombra para os ícones */
+}
+
+.grid-item span {
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+.levels-container {
+    width: 95%;
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.levels-container h2 {
+    color: #ffeb3b;
+    text-shadow: 0 0 5px #ffeb3b;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+.level-card {
+    background-image: linear-gradient(160deg, #1a2a6c, #b21f1f, #fdbb2d); /* Gradiente colorido */
+    color: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    width: 90%;
+    max-width: 400px;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex; /* Adicionado para layout flexível */
+    flex-direction: column; /* Conteúdo em coluna */
+    align-items: center; /* Centraliza itens */
+}
+
+.level-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* **IMAGENS DOS NÍVEIS - TAMANHO MENOR E ESTILO APRIMORADO** */
+.level-card-image, .level-card-image-placeholder {
+    width: 60px; /* Tamanho da imagem do nível - Reduzido de 80px */
+    height: 60px; /* Reduzido de 80px */
+    border-radius: 50%; /* Torna a imagem circular para um visual mais "bonito" */
+    object-fit: cover; /* Garante que a imagem preencha a área sem distorcer */
+    margin-bottom: 12px; /* Ajuste sutil no espaçamento */
+    border: 3px solid #ffd700; /* Borda dourada para destaque */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8), inset 0 0 8px rgba(255, 215, 0, 0.3); /* Sombra mais vibrante */
+}
+
+.level-card h3 {
+    margin-top: 0;
+    font-size: 1.6em;
+    color: #ffd700; /* Dourado para o nome do nível */
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+}
+
+.level-card p {
+    margin: 8px 0;
+    font-size: 1.1em;
+}
+
+.level-card .buy-btn {
+    background-color: #28a745; /* Botão de compra verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+    margin-top: 10px; /* Espaçamento acima do botão */
+}
+
+.level-card .buy-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.no-levels-message {
+    color: #ffeb3b;
+    font-size: 1.1em;
+    margin-top: 20px;
+    text-shadow: 0 0 3px rgba(255, 235, 59, 0.5);
+}
+
+/* Footer de navegação */
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Fundo um pouco mais escuro para contraste */
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.3); /* Linha divisória mais visível */
+    backdrop-filter: blur(8px); /* Blur mais intenso */
+    z-index: 100;
+}
+
+.footer-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 0.85em; /* Fonte ligeiramente maior */
+    transition: color 0.3s, transform 0.2s;
+    flex: 1; /* Distribui o espaço igualmente */
+}
+
+.footer-item img {
+    width: 35px; /* Ícones um pouco maiores */
+    height: 35px;
+    margin-bottom: 5px;
+    filter: drop-shadow(0 0 7px #fff); /* Sombra mais pronunciada */
+}
+
+.footer-item:hover {
+    color: #ffeb3b; /* Cor de destaque ao passar o mouse */
+    transform: translateY(-3px); /* Efeito sutil de elevação */
+}
+
+/* Responsividade para telas menores (ex: mobile) */
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Ajusta para mobile */
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .grid-item {
+        padding: 12px 8px;
+        font-size: 0.8em;
+        min-height: 70px;
+    }
+
+    .grid-item img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .header {
+        font-size: 1.4em;
+        padding: 15px;
+    }
+
+    .logout-btn {
+        padding: 6px 12px;
+        font-size: 0.9em;
+    }
+
+    .carousel-container {
+        height: 150px; /* Altura menor para mobile */
+        margin-top: 10px;
+    }
+
+    .levels-container h2 {
+        font-size: 1.5em;
+    }
+
+    .level-card {
+        padding: 15px;
+    }
+
+    .level-card h3 {
+        font-size: 1.4em;
+    }
+
+    .level-card p {
+        font-size: 1em;
+    }
+
+    .footer-item {
+        font-size: 0.75em;
+    }
+
+    .footer-item img {
+        width: 28px;
+        height: 28px;
+    }
+}

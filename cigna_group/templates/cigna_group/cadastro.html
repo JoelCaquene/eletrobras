@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Cigna Group</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url("{% static 'cigna_group/images/background_cadastro.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            position: relative;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #ffd700;
+        }
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff4500;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e63900;
+        }
+        .link-apoio {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-link {
+            display: block;
+            margin-top: 15px;
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 15px 0;
+        }
+        .messages li.success {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .messages li.error {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ config.link_apoio_whatsapp }}" class="link-apoio">Apoio</a>
+    <div class="container">
+        <h2>Cadastro Cigna Group</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="tel" name="phone_number" placeholder="Número de Telefone" required>
+            <input type="password" name="password" placeholder="Senha (Mínimo 4 dígitos)" minlength="4" required>
+            <input type="password" name="password_confirm" placeholder="Confirmar Senha" minlength="4" required>
+            <input type="text" name="invitation_code" placeholder="Código de Convite (opcional)" 
+                   value="{{ request.GET.convite|default:'' }}"> {# <--- CORREÇÃO AQUI #}
+            <button type="submit">Cadastrar</button>
+        </form>
+        <a href="{% url 'login' %}" class="nav-link">Já tem uma conta? Entrar</a>
+    </div>
+
+    {# Script para preencher o campo de convite ao carregar a página #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const conviteCode = urlParams.get('convite');
+            if (conviteCode) {
+                document.querySelector('input[name="invitation_code"]').value = conviteCode;
+            }
+        });
+    </script>
+</body>
+</html>

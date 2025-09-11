@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Níveis - Cigna Group</title>
+    <style>
+        body {
+            background-color: #0c0b2d;
+            background-image: url('{% static "cigna_group/images/fundo_azul_raios.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            text-align: center;
+            padding-bottom: 80px; /* Espaço para o footer fixo */
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px;
+            color: #ffeb3b;
+            text-shadow: 0 0 5px #ffeb3b;
+            font-size: 1.5em;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .logout-btn {
+            background-color: #ff416c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 65, 108, 0.4);
+        }
+
+        .logout-btn:hover {
+            background-color: #e63900;
+            transform: translateY(-2px);
+        }
+
+        .levels-display-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Espaçamento entre os cartões de nível */
+        }
+
+        .levels-display-container h2 {
+            color: #ffeb3b;
+            text-shadow: 0 0 5px #ffeb3b;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .level-card-item {
+            background-image: linear-gradient(160deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            width: 90%;
+            max-width: 400px;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .level-card-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .level-card-item-image, .level-card-item-image-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 5px solid #ffd700;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), inset 0 0 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .level-card-item h3 {
+            margin-top: 0;
+            font-size: 1.8em;
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+        }
+
+        .level-card-item p {
+            margin: 8px 0;
+            font-size: 1.2em;
+        }
+
+        .level-card-item .buy-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+            margin-top: 15px;
+        }
+
+        .level-card-item .buy-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .no-levels-message {
+            color: #ffeb3b;
+            font-size: 1.1em;
+            margin-top: 20px;
+            text-shadow: 0 0 3px rgba(255, 235, 59, 0.5);
+        }
+
+        /* Footer de navegação */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 0.85em;
+            transition: color 0.3s, transform 0.2s;
+            flex: 1;
+        }
+
+        .footer-item img {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 7px #fff);
+        }
+
+        .footer-item:hover {
+            color: #ffeb3b;
+            transform: translateY(-3px);
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .levels-display-container {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .level-card-item {
+                padding: 15px;
+            }
+
+            .level-card-item-image, .level-card-item-image-placeholder {
+                width: 90px;
+                height: 90px;
+            }
+
+            .level-card-item h3 {
+                font-size: 1.5em;
+            }
+
+            .level-card-item p {
+                font-size: 1.1em;
+            }
+
+            .level-card-item .buy-btn {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+
+            .header {
+                font-size: 1.4em;
+                padding: 15px;
+            }
+            .logout-btn {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Níveis</h1>
+        <a href="{% url 'saida' %}" class="logout-btn">Sair</a>
+    </div>
+
+    <div class="levels-display-container">
+        <h2>Níveis Disponíveis</h2>
+        {% if niveis %}
+            {% for nivel in niveis %}
+                <div class="level-card-item" data-id="{{ nivel.id }}">
+                    {% if nivel.imagem %}
+                        <img src="{{ nivel.imagem.url }}" alt="Imagem do Nível {{ nivel.nome_nivel }}" class="level-card-item-image">
+                    {% else %}
+                        <img src="https://placehold.co/100x100/CCCCCC/FFFFFF?text=Sem%20Imagem" alt="Nível sem imagem" class="level-card-item-image-placeholder">
+                    {% endif %}
+                    <h3>{{ nivel.nome_nivel }}</h3>
+                    <p>Depósito Mínimo: USD {{ nivel.deposito_minimo }}</p>
+                    <p>Ganho Diário: USD {{ nivel.ganho_diario }}</p>
+                    <p>Ganho Mensal: USD {{ nivel.ganho_mensal }}</p>
+                    <p>Ciclo: {{ nivel.ciclo_dias }} dias</p>
+                    <button class="buy-btn" data-id="{{ nivel.id }}">Alugar</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-levels-message">Nenhum nível disponível no momento.</p>
+        {% endif %}
+    </div>
+
+    <nav class="footer-nav">
+        <a href="{% url 'menu' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_menu.png' %}" alt="Menu">
+            <span>MENU</span>
+        </a>
+        <a href="{% url 'nivel' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_nivel.png' %}" alt="Nivel">
+            <span>NÍVEL</span>
+        </a>
+        <a href="{% url 'renda' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_renda.png' %}" alt="Renda">
+            <span>RENDA</span>
+        </a>
+        <a href="{% url 'sobre' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_sobre.png' %}" alt="Sobre">
+            <span>SOBRE</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="footer-item">
+            <img src="{% static 'cigna_group/images/icon_perfil.png' %}" alt="Perfil">
+            <span>PERFIL</span>
+        </a>
+    </nav>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buyButtons = document.querySelectorAll('.buy-btn');
+
+            buyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const nivelId = this.getAttribute('data-id');
+                    
+                    fetch('/alugar-nivel/', { // URL CORRIGIDA: usei o traço (-) em vez do sublinhado (_)
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ 'nivel_id': nivelId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            window.location.reload(); // Recarregar a página para atualizar o estado
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Ocorreu um erro ao tentar alugar o nível.');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

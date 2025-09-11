@@ -1,0 +1,32 @@
+    # Python
+    __pycache__/
+    *.pyc
+    *.pyo
+    *.pyd
+    .Python/
+    env/
+    venv/
+    *.env # Muito importante! Não suba seu arquivo .env para o GitHub!
+    .ipynb_checkpoints/
+    
+    # Django
+    *.log
+    *.pot
+    *.mo
+    *.json
+    local_settings.py
+    db.sqlite3 # Não suba o banco de dados local
+    /static # O collectstatic vai criar isso, mas não precisa estar no git para o deploy
+    /staticfiles/ # O collectstatic vai criar isso, mas não precisa estar no git para o deploy
+    
+    # Media files
+    /media/ # Não suba os arquivos de mídia (uploads) para o GitHub, pois o Cloudinary os gerencia
+    
+    # IDEs
+    .idea/
+    .vscode/
+    
+    # Render.com specific (if any)
+    .render/
+    
+    

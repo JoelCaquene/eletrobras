@@ -3,11 +3,10 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
-    # A referência precisa ser para 'cigna_group' (em minúsculas)
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cigna_group.settings')
+    # A referência agora aponta para a pasta correta 'core'
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -17,7 +16,6 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
 
 if __name__ == '__main__':
     main()

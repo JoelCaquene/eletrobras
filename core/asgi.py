@@ -8,10 +8,9 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
-
 from django.core.asgi import get_asgi_application
 
-# A referência precisa ser para 'cigna_group' (em minúsculas)
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cigna_group.settings')
+# A referência precisa ser para 'core' (em minúsculas) para corresponder ao nome da sua pasta.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 application = get_asgi_application()

@@ -31,7 +31,7 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 # Domínios permitidos para acessar sua aplicação
 # Altere 'seu-app-heroku' para o nome do seu aplicativo no Heroku
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'seu-app-heroku.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cigna-group-oficial.herokuapp.com']
 
 # Aplicações adicionadas e apps para Cloudinary e WhiteNoise
 INSTALLED_APPS = [
@@ -41,19 +41,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Suas aplicações
-    'cigna_group', 
+    'cigna_group', # O nome da sua aplicação que contém os modelos e views
 
     # Apps de terceiros para deploy
-    'cloudinary_storage', 
-    'cloudinary', 
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # WhiteNoise deve vir logo após SecurityMiddleware
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,8 +62,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Altere para o nome do seu projeto principal
-ROOT_URLCONF = 'CIGNA_GROUP.urls'
+# Altere para o nome da sua pasta de projeto principal, 'core'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -81,9 +81,8 @@ TEMPLATES = [
     },
 ]
 
-# Altere para o nome do seu projeto principal
-WSGI_APPLICATION = 'CIGNA_GROUP.wsgi.application'
-
+# Altere para o nome da sua pasta de projeto principal, 'core'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # Use PostgreSQL em produção (Heroku oferece isso)
@@ -124,8 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br' 
-TIME_ZONE = 'Africa/Luanda' 
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'Africa/Luanda'
 USE_I18N = True
 USE_TZ = True
 
@@ -148,7 +147,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Configurações do Cloudinary
-CLOUDINARY_URL = os.getenv('CLOUDINARY_URL') 
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
 
 # Default primary key field type

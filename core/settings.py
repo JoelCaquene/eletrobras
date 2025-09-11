@@ -30,8 +30,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-q+)rh&425aq#(5#2l+7
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 # Domínios permitidos para acessar sua aplicação
-# Altere 'seu-app-heroku' para o nome do seu aplicativo no Heroku
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cigna-group-oficial.herokuapp.com']
+# A URL do seu app Heroku precisa ser adicionada aqui
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cigna-group-oficial.herokuapp.com', 'cigna-group-oficial-06b693f1a7dc.herokuapp.com']
 
 # Aplicações adicionadas e apps para Cloudinary e WhiteNoise
 INSTALLED_APPS = [

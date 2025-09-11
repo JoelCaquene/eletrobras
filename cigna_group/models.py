@@ -48,7 +48,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     spins_remaining = models.IntegerField(default=0, verbose_name="Prêmios Restantes para Abrir")
     last_spin_reset = models.DateTimeField(null=True, blank=True, verbose_name="Último Reset de Prêmios")
 
-
     objects = UsuarioManager()
 
     USERNAME_FIELD = 'phone_number'
@@ -86,6 +85,7 @@ class Config(models.Model):
 
 # Modelo para Níveis de Investimento
 class Nivel(models.Model):
+    numero = models.IntegerField(unique=True, verbose_name="Número do Nível")
     nome_nivel = models.CharField(max_length=100, unique=True, verbose_name="Nome do Nível")
     deposito_minimo = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Depósito Mínimo para Alugar (USD)")
     ganho_diario = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ganho Diário (USD)")
@@ -95,9 +95,10 @@ class Nivel(models.Model):
     class Meta:
         verbose_name = "Nível de Investimento"
         verbose_name_plural = "Níveis de Investimento"
+        ordering = ['numero']
 
     def __str__(self):
-        return self.nome_nivel
+        return f"Nível {self.numero}: {self.nome_nivel}"
     
     @property
     def ganho_mensal(self):
@@ -185,10 +186,6 @@ class Saque(models.Model):
 # Modelo para Renda (totaliza saldos do usuário)
 class Renda(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='renda_geral', verbose_name="Usuário")
-    # Os campos abaixo agora são gerenciados no modelo Usuario para simplificação
-    # saldo_disponivel = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    # saldo_subsidio = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    # total_sacado = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     class Meta:
         verbose_name = "Renda do Usuário"
@@ -235,3 +232,4 @@ class Sobre(models.Model):
 
     def __str__(self):
         return "Conteúdo da Página 'Sobre' da cigna_group"
+

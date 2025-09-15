@@ -8,17 +8,27 @@ from .models import (
     PremioSubsidio,
     Sobre
 )
-from .views import aprovar_deposito_com_subsidio
-from .forms import UsuarioAdminForm
+from .views import aprovar_deposito_com_subsidio # Importa a função do views.py
+from .forms import UsuarioAdminForm # Importa o formulário que você criou
 
 # Customização do Admin para o modelo Usuario
 class UsuarioAdmin(BaseUserAdmin):
+    # Adicionando o formulário personalizado
     form = UsuarioAdminForm
     
+    # Campos que aparecerão na lista de usuários no admin
     list_display = ('phone_number', 'username', 'invitation_code', 'is_staff', 'is_active', 'spins_remaining', 'can_spin_roulette')
+    
+    # Campos pelos quais você pode filtrar a lista
     list_filter = ('is_staff', 'is_active', 'can_spin_roulette')
+    
+    # Campos pelos quais você pode pesquisar
     search_fields = ('phone_number', 'username', 'invitation_code')
+    
+    # A ordem dos campos na página de edição do usuário
     ordering = ('phone_number',)
+    
+    # Grupos de campos na página de edição do usuário
     fieldsets = (
         (None, {'fields': ('phone_number', 'password')}),
         ('Informações Pessoais', {'fields': ('username', 'invitation_code', 'inviter')}),
@@ -27,17 +37,22 @@ class UsuarioAdmin(BaseUserAdmin):
         ('Controle de Prêmios de Subsídio', {'fields': ('can_spin_roulette', 'spins_remaining', 'last_spin_reset')}),
         ('Datas Importantes', {'fields': ('last_login', 'date_joined')}),
     )
+    
+    # Campos somente leitura
     readonly_fields = ('last_login', 'date_joined')
     
+    # Ação para resetar giros da roleta
     @admin.action(description="Resetar giros da roleta para os usuários selecionados")
     def reset_spins_for_users(self, request, queryset):
         with transaction.atomic():
             updated_count = queryset.update(spins_remaining=1, can_spin_roulette=True)
             self.message_user(request, f"{updated_count} usuário{pluralize(updated_count)} tiveram seus giros da roleta resetados para 1.")
+
     actions = [reset_spins_for_users]
 
 admin.site.register(Usuario, UsuarioAdmin)
 
+# Registrando outros modelos
 @admin.register(Config)
 class ConfigAdmin(admin.ModelAdmin):
     list_display = ('taxa_saque', 'saque_minimo', 'horario_saque_inicio', 'horario_saque_fim')
@@ -62,7 +77,7 @@ class DepositoAdmin(admin.ModelAdmin):
     list_filter = ('status', 'data_deposito')
     search_fields = ('usuario__phone_number',)
     raw_id_fields = ('usuario',)
-    
+
     @admin.action(description="Aprovar depósitos selecionados e conceder subsídios")
     def aprovar_deposito_action(self, request, queryset):
         total_aprovados = 0
@@ -75,6 +90,7 @@ class DepositoAdmin(admin.ModelAdmin):
             self.message_user(request, f"{total_aprovados} depósito{pluralize(total_aprovados)} aprovado{pluralize(total_aprovados)} com sucesso e subsídio{pluralize(total_aprovados)} concedido{pluralize(total_aprovados)}, se aplicável.")
         else:
             self.message_user(request, "Nenhum depósito foi aprovado ou já estavam aprovados.", level='warning')
+
     actions = [aprovar_deposito_action]
 
     def link_comprovativo(self, obj):
@@ -83,6 +99,7 @@ class DepositoAdmin(admin.ModelAdmin):
             return format_html('<a href="{}" target="_blank">Ver Comprovativo</a>', obj.comprovativo_imagem.url)
         return "Sem Comprovativo"
     link_comprovativo.short_description = "Comprovativo"
+
 
 @admin.register(ClientBankDetails)
 class ClientBankDetailsAdmin(admin.ModelAdmin):
@@ -97,39 +114,27 @@ class NivelAlugadoAdmin(admin.ModelAdmin):
     search_fields = ('usuario__phone_number', 'nivel__nome_nivel')
     raw_id_fields = ('usuario', 'nivel')
 
+# --- REGISTRO DE SAQUE ATUALIZADO ---
 @admin.register(Saque)
 class SaqueAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'valor', 'status', 'data_saque', 'valor_liquido', 'iban_cliente')
+    list_display = ('usuario', 'valor', 'valor_liquido', 'taxa', 'status', 'data_saque', 'nome_banco_cliente')
     list_filter = ('status', 'data_saque')
-    search_fields = ('usuario__phone_number', 'iban_cliente')
-    readonly_fields = ('data_saque', 'usuario', 'valor', 'valor_liquido', 'taxa', 'iban_cliente')
-    
-    @admin.action(description="Aprovar saques selecionados")
-    def aprovar_saque_action(self, request, queryset):
-        saques_aprovados = 0
-        for saque in queryset:
-            if saque.status == 'Pendente':
-                saque.status = 'Aprovado'
-                saque.save()
-                saques_aprovados += 1
-        
-        if saques_aprovados > 0:
-            self.message_user(request, f"{saques_aprovados} saque{pluralize(saques_aprovados)} aprovado{pluralize(saques_aprovados)} com sucesso.")
-        else:
-            self.message_user(request, "Nenhum saque pendente foi selecionado para aprovação.", level='warning')
-            
-    actions = [aprovar_saque_action]
+    search_fields = ('usuario__phone_number', 'iban_cliente', 'nome_banco_cliente')
+    raw_id_fields = ('usuario',)
+
+# --- FIM DA ATUALIZAÇÃO ---
 
 @admin.register(Renda)
 class RendaAdmin(admin.ModelAdmin):
-    list_display = ('usuario',)
+    list_display = ('usuario',) # Os campos de saldo estão em Usuario
     search_fields = ('usuario__phone_number',)
     raw_id_fields = ('usuario',)
 
+# NOVO Registro para PremioSubsidio (substitui RoletaPremioAdmin)
 @admin.register(PremioSubsidio)
 class PremioSubsidioAdmin(admin.ModelAdmin):
     list_display = ('valor', 'chance', 'descricao')
-    list_editable = ('chance', 'descricao')
+    list_editable = ('chance', 'descricao') # Permite editar direto na lista
 
 @admin.register(Sobre)
 class SobreAdmin(admin.ModelAdmin):

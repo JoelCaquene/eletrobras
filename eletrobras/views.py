@@ -247,9 +247,11 @@ def saque_view(request):
     try:
         client_bank_details = ClientBankDetails.objects.get(usuario=usuario)
         tem_detalhes_bancarios = True
+        nome_banco_cliente = client_bank_details.nome_banco
         iban_cliente = client_bank_details.iban
     except ClientBankDetails.DoesNotExist:
         tem_detalhes_bancarios = False
+        nome_banco_cliente = None
         iban_cliente = None
 
     if request.method == 'POST':
@@ -296,10 +298,11 @@ def saque_view(request):
                 # Cria a solicitação de saque com o valor bruto e armazena a taxa
                 Saque.objects.create(
                     usuario=usuario,
-                    valor=valor_saque_bruto,  # Registra o valor bruto do saque
+                    valor=valor_saque_bruto,
                     valor_liquido=valor_saque_liquido,
                     taxa=valor_taxa,
                     iban_cliente=iban_cliente,
+                    nome_banco_cliente=nome_banco_cliente,
                     status='Pendente'
                 )
                 

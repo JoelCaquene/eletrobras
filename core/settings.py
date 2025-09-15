@@ -103,15 +103,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 # URL para referenciar arquivos estáticos no seu HTML.
-STATIC_URL = '/static/'
+STATIC_URL = 'static/' # Apenas 'static/'
 
 # Pasta para onde os arquivos estáticos serão coletados em produção.
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Pastas de onde o Django deve buscar os arquivos estáticos.
-# Esta linha aponta para a pasta 'static' na raiz do seu projeto.
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+    BASE_DIR / 'eletrobras/static',
 ]
 
 # Configuração de armazenamento para arquivos estáticos em produção (WhiteNoise).

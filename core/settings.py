@@ -13,18 +13,19 @@ dotenv.load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# A chave secreta é carregada da variável de ambiente SECRET_KEY.
+# IMPORTANTE: Em produção, o valor vem do Render.
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# Usa a variável de ambiente para controlar o DEBUG
+# O modo de debug é controlado pela variável de ambiente DJANGO_DEBUG.
+# É crucial que ela seja 'False' em produção.
 DEBUG = os.getenv('DJANGO_DEBUG') == 'True'
 
-# Domínios permitidos para acessar sua aplicação
-# Adicione o domínio do seu Render aqui
+# Domínios permitidos para sua aplicação em produção.
+# O domínio do seu Render deve estar aqui.
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'eletrobras.onrender.com']
 
-# Aplicações adicionadas e apps para Cloudinary e WhiteNoise
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -34,16 +35,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Suas aplicações
-    'eletrobras', # O nome da sua aplicação que contém os modelos e views
+    'eletrobras',
 
     # Apps de terceiros para deploy
     'cloudinary_storage',
     'cloudinary',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise deve vir logo após SecurityMiddleware
+    # WhiteNoise deve vir logo após SecurityMiddleware.
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,13 +55,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Aponte para a sua pasta de projeto principal, 'core'
+
 ROOT_URLCONF = 'core.urls'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Adicionado para templates globais
+        'DIRS': [BASE_DIR / 'templates'],  # Pasta para templates globais
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,79 +75,68 @@ TEMPLATES = [
     },
 ]
 
-# Aponte para a sua pasta de projeto principal, 'core'
-WSGI_APPLICATION = 'core.wsgi.application'
 
-# --------------------------------------------------------------
-# Início da seção para configuração do banco de dados em produção
+# Configuração do Banco de Dados
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL'),
         conn_max_age=600
     )
 }
-# Fim da seção de configuração de banco de dados
-# --------------------------------------------------------------
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# Validação de Senha e Autenticação de Usuário
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# Configurações de Internacionalização
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'Africa/Luanda'
 USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# --- Seção de Arquivos Estáticos ---
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# URL para referenciar arquivos estáticos no seu HTML.
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Pasta para onde os arquivos estáticos serão coletados em produção.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Pastas de onde o Django deve buscar os arquivos estáticos.
+# Esta linha aponta para a pasta 'static' na raiz do seu projeto.
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    BASE_DIR / 'static',
 ]
 
-# Configuração de armazenamento de arquivos (ativado para produção)
-# Use Cloudinary para arquivos de mídia (uploads de usuários)
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-# Use WhiteNoise para arquivos estáticos em produção (CSS, JS, etc.)
+# Configuração de armazenamento para arquivos estáticos em produção (WhiteNoise).
+# Esta é a chave para o Render servir suas imagens e CSS corretamente.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-# Configurações do Cloudinary (necessárias para produção)
+# --- Seção de Arquivos de Mídia (Uploads de usuários) ---
+MEDIA_URL = '/media/'
+
+# Pasta local para arquivos de mídia (usada em desenvolvimento).
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Configuração de armazenamento para arquivos de mídia em produção (Cloudinary).
+# Isso diz ao Django para usar o Cloudinary para uploads.
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# URL do Cloudinary, lida com a conexão e armazenamento das imagens de mídia.
 CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
+# Outras configurações
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Modelos de Autenticação
 AUTH_USER_MODEL = 'eletrobras.Usuario'
-
-# URL para onde o Django redireciona para o login
 LOGIN_URL = 'login'
 
-# Para segurança CSRF em produção
+# Para segurança CSRF em produção, adicione a URL do seu Render.
 CSRF_TRUSTED_ORIGINS = ['https://eletrobras.onrender.com']

@@ -1,4 +1,4 @@
-import uuid  # Importar uuid para o campo id
+import uuid # Importar uuid para o campo id
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
@@ -169,7 +169,7 @@ class NivelAlugado(models.Model):
         return f"{self.usuario.phone_number} alugou {self.nivel.nome_nivel}"
 
     def save(self, *args, **kwargs):
-        if not self.id:  # Apenas ao criar um novo objeto
+        if not self.id: # Apenas ao criar um novo objeto
             self.data_expiracao = self.data_inicio + timezone.timedelta(days=self.nivel.ciclo_dias)
         super().save(*args, **kwargs)
 
@@ -180,6 +180,12 @@ class Saque(models.Model):
     iban_cliente = models.CharField(max_length=30, blank=True, null=True, verbose_name="IBAN do Cliente")
     status = models.CharField(max_length=20, default='Pendente', choices=[('Pendente', 'Pendente'), ('Aprovado', 'Aprovado'), ('Rejeitado', 'Rejeitado')], verbose_name="Status")
     data_saque = models.DateTimeField(default=timezone.now, verbose_name="Data da Solicitação")
+    
+    # --- NOVOS CAMPOS ADICIONADOS PARA RESOLVER O ERRO ---
+    taxa = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Taxa Aplicada")
+    valor_liquido = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Valor Líquido Recebido")
+    nome_banco_cliente = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nome do Banco do Cliente")
+    # --- FIM DOS NOVOS CAMPOS ---
 
     class Meta:
         verbose_name = "Saque"
@@ -237,3 +243,4 @@ class Sobre(models.Model):
 
     def __str__(self):
         return "Conteúdo da Página 'Sobre' da eletrobras"
+        

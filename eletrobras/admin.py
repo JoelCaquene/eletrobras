@@ -114,15 +114,19 @@ class NivelAlugadoAdmin(admin.ModelAdmin):
     search_fields = ('usuario__phone_number', 'nivel__nome_nivel')
     raw_id_fields = ('usuario', 'nivel')
 
-# --- REGISTRO DE SAQUE ATUALIZADO ---
 @admin.register(Saque)
 class SaqueAdmin(admin.ModelAdmin):
+    # Campos que serão exibidos na lista de saques
     list_display = ('usuario', 'valor', 'valor_liquido', 'taxa', 'status', 'data_saque', 'nome_banco_cliente')
+    
+    # Filtros para a lista de saques
     list_filter = ('status', 'data_saque')
+    
+    # Campos para pesquisa
     search_fields = ('usuario__phone_number', 'iban_cliente', 'nome_banco_cliente')
+    
+    # Usar raw_id_fields para buscar o usuário de forma mais eficiente
     raw_id_fields = ('usuario',)
-
-# --- FIM DA ATUALIZAÇÃO ---
 
 @admin.register(Renda)
 class RendaAdmin(admin.ModelAdmin):

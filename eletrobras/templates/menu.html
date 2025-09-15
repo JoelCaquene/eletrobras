@@ -1,0 +1,698 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - ELETROBRAS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+        /* Variáveis para Cores e Efeitos */
+        :root {
+            --cor-fundo: #0a0a0a;
+            --cor-brilho-1: #00e6ff; /* Ciano Neon */
+            --cor-brilho-2: #ff007f; /* Magenta Neon */
+            --cor-texto: #ffffff;
+            --cor-texto-claro: #aaaaaa;
+            --cor-card-bg: rgba(255, 255, 255, 0.05);
+            --sombra-card: 0 4px 15px rgba(0, 0, 0, 0.2);
+            --borda-card: rgba(255, 255, 255, 0.1);
+            --cor-quadrado-botoes: rgba(255, 255, 255, 0.08);
+            --borda-quadrado: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Estilos Globais e do Body */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Espaço para a barra de navegação inferior */
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{% static 'eletrobras/images/bg_energia.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            filter: blur(5px) brightness(0.7);
+            z-index: -2;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        /* Seção do Carrossel Falso no Topo */
+        .top-section {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--cor-brilho-1);
+            box-shadow: 0 5px 20px rgba(0, 230, 255, 0.2);
+        }
+
+        .top-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: kenburns 20s infinite alternate;
+        }
+        
+        @keyframes kenburns {
+            0% {
+                transform: scale(1.1) translate(0, 0);
+            }
+            100% {
+                transform: scale(1.25) translate(-5%, 5%);
+            }
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.7) 100%);
+        }
+
+        /* Seção do Título */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: absolute;
+            top: 10px;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 2.8em;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--cor-brilho-1), var(--cor-brilho-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 230, 255, 0.4), 0 0 20px rgba(255, 0, 127, 0.4);
+            animation: brilhoLogo 2s infinite alternate;
+        }
+
+        @keyframes brilhoLogo {
+            from {
+                text-shadow: 0 0 8px rgba(0, 230, 255, 0.4), 0 0 16px rgba(255, 0, 127, 0.4);
+            }
+            to {
+                text-shadow: 0 0 12px rgba(0, 230, 255, 0.6), 0 0 24px rgba(255, 0, 127, 0.6);
+            }
+        }
+
+        /* Texto Fixo Piscando */
+        .blinking-text-container {
+            margin: 20px auto;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 15px;
+            box-shadow: 0 0 15px rgba(0, 230, 255, 0.2);
+            text-align: center;
+        }
+
+        .blinking-text {
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--cor-brilho-1);
+            animation: blink-effect 1.5s step-start infinite;
+            text-shadow: 0 0 8px var(--cor-brilho-1);
+        }
+
+        @keyframes blink-effect {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* WhatsApp e Telegram na Lateral Direita */
+        .social-fixed {
+            position: fixed;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 2000;
+        }
+
+        .social-fixed a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--cor-brilho-1);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cor-brilho-1), 0 0 20px var(--cor-brilho-2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-fixed a:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--cor-brilho-1), 0 0 30px var(--cor-brilho-2);
+        }
+
+        .social-fixed i {
+            font-size: 24px;
+            color: var(--cor-brilho-1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .social-fixed a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(45deg, var(--cor-brilho-1), var(--cor-brilho-2));
+            transform: scale(0);
+            border-radius: 50%;
+            transition: transform 0.3s ease-in-out;
+            opacity: 0.2;
+        }
+
+        .social-fixed a:hover::before {
+            transform: scale(1);
+        }
+
+        /* Quadrado de Botões Personalizado */
+        .menu-wrapper {
+            width: 95%;
+            max-width: 900px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--cor-quadrado-botoes);
+            border: 1px solid var(--borda-quadrado);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            justify-items: center;
+        }
+
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--cor-texto-claro);
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            color: var(--cor-brilho-1);
+        }
+
+        .menu-item .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-item:hover .icon-wrapper {
+            background: linear-gradient(145deg, rgba(0, 230, 255, 0.2), rgba(255, 0, 127, 0.2));
+            box-shadow: 0 5px 25px rgba(0, 230, 255, 0.4);
+            border: 1px solid var(--cor-brilho-1);
+        }
+
+        .menu-item img {
+            width: 45px;
+            height: 45px;
+            filter: drop-shadow(0 0 5px rgba(0, 230, 255, 0.5));
+            transition: filter 0.3s ease;
+        }
+
+        .menu-item:hover img {
+            filter: drop-shadow(0 0 10px var(--cor-brilho-1));
+        }
+
+        /* Botão Sair Estendido */
+        .exit-button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .exit-button {
+            width: 90%;
+            max-width: 400px;
+            padding: 15px;
+            background: linear-gradient(90deg, #ff4d4d, #b30000);
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .exit-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            transition: transform 0.5s ease-in-out;
+            z-index: 2;
+        }
+        
+        .exit-button:hover::before {
+            transform: rotate(30deg) translateY(-100%);
+        }
+
+        .exit-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Barra de Rodapé Personalizada */
+        .footer-nav {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.2s;
+            position: relative;
+        }
+        
+        .footer-item.active {
+            color: var(--cor-brilho-1);
+        }
+
+        .footer-item i {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--cor-texto-claro);
+            transition: color 0.3s;
+        }
+
+        .footer-item.active i {
+            color: var(--cor-brilho-1);
+            animation: piscaIcone 1.5s infinite alternate;
+        }
+        
+        @keyframes piscaIcone {
+            from {
+                text-shadow: 0 0 5px var(--cor-brilho-1), 0 0 10px var(--cor-brilho-2);
+            }
+            to {
+                text-shadow: none;
+            }
+        }
+
+        /* Botão Voltar Personalizado */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--cor-brilho-1);
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: 600;
+            box-shadow: 0 0 10px var(--cor-brilho-1);
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .back-button:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Pop-up de Boas-Vindas */
+        .splash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .splash-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .splash-container {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 90%;
+            color: var(--cor-texto);
+            text-align: center;
+            animation: popUpEnergy 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+            position: relative;
+            border: 2px solid var(--cor-brilho-1);
+        }
+
+        @keyframes popUpEnergy {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .splash-container .close-splash {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            color: var(--cor-texto-claro);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .splash-container .close-splash:hover {
+            transform: rotate(90deg);
+            color: var(--cor-brilho-2);
+        }
+
+        .splash-container h2 {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--cor-brilho-1);
+            text-shadow: 0 0 5px var(--cor-brilho-1);
+            margin-bottom: 15px;
+        }
+
+        .splash-container p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: var(--cor-texto-claro);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .logo {
+                font-size: 2.2em;
+            }
+            .social-fixed {
+                right: 5px;
+                top: 70%;
+                transform: translateY(0);
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                gap: 10px;
+                background-color: rgba(0, 0, 0, 0.5);
+                padding: 5px;
+                border-radius: 10px;
+            }
+            .social-fixed a {
+                width: 40px;
+                height: 40px;
+            }
+            .social-fixed i {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splashScreen" class="splash-overlay">
+        <div class="splash-container">
+            <span class="close-splash" onclick="closeSplash()">&times;</span>
+            <img src="{% static 'eletrobras/images/pop-up-image.png' %}" alt="Eletrobras" style="width: 100%; max-width: 200px; margin-bottom: 20px;">
+            <h2>Bem-vindo à ELETROBRAS</h2>
+            <p>A Eletrobras é uma empresa brasileira de capital aberto que atua como uma holding, dividida em geração e transmissão, criada em 1962 inicialmente como uma empresa estatal, para coordenar todas as empresas do setor elétrico.</p>
+            <div class="social-links">
+                {% if config and config.link_grupo_whatsapp %}
+                    <a href="{{ config.link_grupo_whatsapp }}" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Grupo WhatsApp</span>
+                    </a>
+                {% endif %}
+                {% if config and config.link_grupo_telegram %}
+                    <a href="{{ config.link_grupo_telegram }}" target="_blank">
+                        <i class="fab fa-telegram-plane"></i>
+                        <span>Grupo Telegram</span>
+                    </a>
+                {% endif %}
+                {% if config and config.link_assistente_whatsapp %}
+                    <a href="{{ config.link_assistente_whatsapp }}" target="_blank">
+                        <i class="fas fa-headset"></i>
+                        <span>Assistente</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="background-overlay"></div>
+
+    <div class="top-section">
+        <img src="{% static 'eletrobras/images/bg_carrossel.png' %}" alt="Eletrobras Imagem" class="top-image">
+        <div class="image-overlay"></div>
+    </div>
+
+    <div class="header">
+        <h1 class="logo">ELETROBRAS</h1>
+    </div>
+
+    <div class="blinking-text-container">
+        <div class="blinking-text">
+            ELETROBRAS, OPORTUNIDADE DE EMPREGO, PARA TODOS.
+        </div>
+    </div>
+
+    <div class="social-fixed">
+        {% if config and config.link_grupo_whatsapp %}
+            <a href="{{ config.link_grupo_whatsapp }}" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        {% endif %}
+        {% if config and config.link_grupo_telegram %}
+            <a href="{{ config.link_grupo_telegram }}" target="_blank">
+                <i class="fab fa-telegram-plane"></i>
+            </a>
+        {% endif %}
+        {% if config and config.link_assistente_whatsapp %}
+            <a href="{{ config.link_assistente_whatsapp }}" target="_blank">
+                <i class="fas fa-headset"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="menu-wrapper">
+        <div class="menu-grid">
+            <a href="{% url 'deposito' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_deposito.png' %}" alt="Depósito">
+                </div>
+                <span>Depósito</span>
+            </a>
+            <a href="{% url 'saque' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_saque.png' %}" alt="Saque">
+                </div>
+                <span>Saque</span>
+            </a>
+            <a href="{% url 'renda' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_renda.png' %}" alt="Renda">
+                </div>
+                <span>Renda</span>
+            </a>
+            <a href="{% url 'tarefa' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_tarefa.png' %}" alt="Tarefa">
+                </div>
+                <span>Tarefa</span>
+            </a>
+            <a href="{% url 'nivel' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_nivel_menu.png' %}" alt="Nível">
+                </div>
+                <span>Nível</span>
+            </a>
+            <a href="{% url 'equipa' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_equipa.png' %}" alt="Equipa">
+                </div>
+                <span>Equipa</span>
+            </a>
+            <a href="{% url 'roleta' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_premios.png' %}" alt="Roleta">
+                </div>
+                <span>Roleta</span>
+            </a>
+            <a href="{% url 'nos' %}" class="menu-item">
+                <div class="icon-wrapper">
+                    <img src="{% static 'eletrobras/images/icon_sobre.png' %}" alt="Nós">
+                </div>
+                <span>Nós</span>
+            </a>
+        </div>
+    </div>
+    
+    <div class="exit-button-container">
+        <a href="{% url 'saida' %}" class="exit-button">
+            Sair
+        </a>
+    </div>
+
+    <nav class="footer-nav" id="menu-footer">
+        <a href="{% url 'menu' %}" class="footer-item active">
+            <i class="fas fa-home"></i>
+            <span>MENU</span>
+        </a>
+        <a href="{% url 'nos' %}" class="footer-item">
+            <i class="fas fa-users"></i>
+            <span>NÓS</span>
+        </a>
+        <a href="{% url 'equipa' %}" class="footer-item">
+            <i class="fas fa-sitemap"></i>
+            <span>EQUIPA</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="footer-item">
+            <i class="fas fa-user-circle"></i>
+            <span>PERFIL</span>
+        </a>
+    </nav>
+
+    <script>
+        // Lógica para mostrar o Pop-up apenas no primeiro login
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const hasSeenSplash = localStorage.getItem('hasSeenSplash');
+
+            // Aqui você deve usar uma lógica de Django para verificar se é o primeiro login do usuário
+            // Por enquanto, usaremos localStorage para simular essa funcionalidade
+            if (!hasSeenSplash) {
+                splashScreen.classList.add('show');
+                localStorage.setItem('hasSeenSplash', 'true');
+            }
+        });
+
+        function closeSplash() {
+            const splashScreen = document.getElementById('splashScreen');
+            splashScreen.classList.remove('show');
+        }
+
+        // Lógica para esconder a barra inferior em outras páginas
+        const footer = document.getElementById('menu-footer');
+        const urlPath = window.location.pathname;
+        const isMenuPage = urlPath === '/menu' || urlPath === '/menu/'; // Ajuste a URL se necessário
+
+        if (!isMenuPage) {
+            footer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

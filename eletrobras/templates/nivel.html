@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Níveis - ELETROBRAS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+        :root {
+            --cor-eletro-azul: #007bff;
+            --cor-eletro-amarelo: #ffc107;
+            --cor-eletro-branco: #ffffff;
+            --cor-texto-escuro: #212529;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-eletro-branco);
+            color: var(--cor-texto-escuro);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            /* overflow-x: hidden; */ /* Removing this to allow vertical scroll */
+            overflow-y: auto; /* Enabling vertical scrolling */
+        }
+
+        /* Efeito de luzes piscando (mantido da página de depósito) */
+        .light-effect, .spark-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .light-bulb {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cor-eletro-amarelo), 0 0 20px var(--cor-eletro-amarelo);
+            animation: flicker 1s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.5; box-shadow: 0 0 10px var(--cor-eletro-amarelo), 0 0 20px var(--cor-eletro-amarelo); }
+            100% { opacity: 1; box-shadow: 0 0 15px var(--cor-eletro-amarelo), 0 0 30px var(--cor-eletro-amarelo); }
+        }
+
+        .spark {
+            position: absolute;
+            background-color: var(--cor-eletro-amarelo);
+            border-radius: 50%;
+            opacity: 0;
+            animation: spark-fly 2s linear infinite;
+            transform: scale(0);
+        }
+
+        @keyframes spark-fly {
+            0% { opacity: 0; transform: scale(0); box-shadow: 0 0 5px var(--cor-eletro-amarelo); }
+            10% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); box-shadow: 0 0 20px var(--cor-eletro-amarelo); }
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px 0;
+            z-index: 100;
+        }
+        
+        /* Efeito de luz piscando no cabeçalho */
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--cor-eletro-azul);
+            text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: headerGlow 1.5s infinite alternate;
+        }
+        
+        @keyframes headerGlow {
+            from { text-shadow: 0 0 10px rgba(0, 123, 255, 0.5); }
+            to { text-shadow: 0 0 20px rgba(0, 123, 255, 0.8), 0 0 30px rgba(0, 123, 255, 0.6); }
+        }
+
+        .levels-container {
+            width: 95%;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            z-index: 1;
+        }
+
+        .level-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--cor-eletro-azul);
+            width: 300px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: card-flicker 1.5s infinite alternate;
+        }
+
+        /* Efeito de brilho piscando na borda do cartão */
+        @keyframes card-flicker {
+            0% { box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(0, 123, 255, 0.6), 0 0 30px rgba(0, 123, 255, 0.4); }
+        }
+
+        .level-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .level-card-content {
+            z-index: 2;
+            position: relative;
+        }
+
+        .level-image-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            /* border-radius: 50%; */ /* Removed to make it square */
+            border-radius: 10px; /* Added a slight border-radius for a nice look */
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+
+        .level-image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* border-radius: 50%; */ /* Removed to make it square */
+            border-radius: 10px; /* Added a slight border-radius for a nice look */
+            border: 4px solid var(--cor-eletro-azul);
+            box-shadow: 0 0 15px var(--cor-eletro-azul);
+            animation: pulse-border 2s infinite ease-in-out;
+        }
+        
+        @keyframes pulse-border {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .level-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* border-radius: 50%; */ /* Removed to make it square */
+            border-radius: 10px; /* Added a slight border-radius for a nice look */
+        }
+
+        .level-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cor-eletro-azul);
+            margin: 10px 0;
+        }
+
+        .level-details p {
+            font-size: 1rem;
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .level-details p strong {
+            color: var(--cor-texto-escuro);
+        }
+
+        .buy-btn {
+            background-color: var(--cor-eletro-amarelo);
+            color: var(--cor-texto-escuro);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .buy-btn:hover {
+            background-color: #e0ac00;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.6);
+        }
+
+        .no-levels-message {
+            margin-top: 50px;
+            font-size: 1.5rem;
+            color: #aaa;
+        }
+
+        /* Removed the entire footer-nav section as requested */
+        /*
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            z-index: 100;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.85em;
+            transition: color 0.3s, transform 0.2s;
+            flex: 1;
+        }
+
+        .footer-item img {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 5px;
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+        }
+
+        .footer-item:hover {
+            color: var(--cor-eletro-azul);
+            transform: translateY(-3px);
+        }
+
+        .footer-item:hover img {
+            filter: grayscale(0%);
+        }
+        */
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .levels-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .level-card {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="light-effect" id="light-effect"></div>
+    <div class="spark-effect" id="spark-effect"></div>
+
+    <header class="header">
+        <h1>NÍVEIS</h1>
+    </header>
+
+    <div class="levels-container">
+        {% if niveis %}
+            {% for nivel in niveis %}
+                <div class="level-card">
+                    <div class="level-image-container">
+                        {% if nivel.imagem %}
+                            <img src="{{ nivel.imagem.url }}" alt="Imagem do Nível {{ nivel.nome_nivel }}" class="level-image">
+                        {% else %}
+                            <img src="https://placehold.co/200x200/cccccc/000000?text={{ nivel.nome_nivel|slice:':4' }}" alt="Nível sem imagem" class="level-image">
+                        {% endif %}
+                    </div>
+                    <div class="level-card-content">
+                        <h3 class="level-name">{{ nivel.nome_nivel }}</h3>
+                        <div class="level-details">
+                            <p><strong>Depósito Mínimo:</strong> KZ {{ nivel.deposito_minimo }}</p>
+                            <p><strong>Ganho Diário:</strong> KZ {{ nivel.ganho_diario }}</p>
+                            <p><strong>Ganho Mensal:</strong> KZ {{ nivel.ganho_mensal }}</p>
+                            <p><strong>Ciclo:</strong> {{ nivel.ciclo_dias }} dias</p>
+                        </div>
+                        <button class="buy-btn" data-id="{{ nivel.id }}">Alugar</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-levels-message">Nenhum nível disponível no momento.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efeito de luzes aleatórias (mantido da página de depósito)
+            const lightContainer = document.getElementById('light-effect');
+            function createRandomLights() {
+                for (let i = 0; i < 30; i++) {
+                    const light = document.createElement('div');
+                    light.className = 'light-bulb';
+                    light.style.width = light.style.height = `${Math.random() * 20 + 10}px`;
+                    light.style.top = `${Math.random() * 100}%`;
+                    light.style.left = `${Math.random() * 100}%`;
+                    light.style.animationDelay = `${Math.random() * 2}s`;
+                    lightContainer.appendChild(light);
+                }
+            }
+            createRandomLights();
+
+            // Efeito de faíscas (mantido da página de depósito)
+            const sparkContainer = document.getElementById('spark-effect');
+            function createRandomSparks() {
+                for (let i = 0; i < 50; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    spark.style.width = spark.style.height = `${Math.random() * 3 + 1}px`;
+                    spark.style.top = `${Math.random() * 100}%`;
+                    spark.style.left = `${Math.random() * 100}%`;
+                    spark.style.animationDelay = `${Math.random() * 3}s`;
+                    sparkContainer.appendChild(spark);
+                }
+            }
+            createRandomSparks();
+        });
+        
+        // Lógica de compra
+        document.addEventListener('DOMContentLoaded', function() {
+            const buyButtons = document.querySelectorAll('.buy-btn');
+            buyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const nivelId = this.getAttribute('data-id');
+                    fetch('/alugar-nivel/', { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ 'nivel_id': nivelId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            window.location.reload(); 
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Ocorreu um erro ao tentar alugar o nível.');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

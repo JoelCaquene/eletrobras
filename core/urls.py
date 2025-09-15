@@ -5,5 +5,5 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('cigna_group.urls')),  # Esta linha direciona a URL raiz para as URLs do seu app
+    path('', include('eletrobras.urls')),  # Esta linha direciona a URL raiz para as URLs do seu app
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

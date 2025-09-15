@@ -1,0 +1,400 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eletrobras - Sua Equipe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0c0b2d;
+            --secondary-color: #ffeb3b;
+            --background-color: #ffffff;
+            --container-bg: rgba(0, 0, 0, 0.05);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --glow-color: #0c0b2d;
+        }
+
+        /* Adicionando barra de rolagem para o corpo da página */
+        body {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            overflow-x: hidden; /* Garante que não haja rolagem horizontal */
+            overflow-y: auto; /* Adiciona rolagem vertical quando o conteúdo excede a tela */
+        }
+
+        /* Animação de Fundo */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 235, 59, 0.1), rgba(0, 255, 0, 0.1), rgba(0, 191, 255, 0.1));
+            animation: move-gradient 20s linear infinite;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        @keyframes move-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Estilo para o cabeçalho "Sua Equipe" */
+        .header {
+            width: 100%;
+            padding: 20px;
+            color: var(--primary-color);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            animation: text-glow 2s infinite alternate;
+        }
+
+        /* Animação de brilho para o cabeçalho */
+        @keyframes text-glow {
+            from {
+                text-shadow: 0 0 5px #0c0b2d, 0 0 10px #0c0b2d, 0 0 15px #0c0b2d, 0 0 20px #0c0b2d;
+            }
+            to {
+                text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 30px #ffeb3b, 0 0 40px #ffeb3b;
+            }
+        }
+
+        .main-container {
+            width: 90%;
+            max-width: 700px;
+            background: var(--container-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 25px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: relative;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            text-shadow: 0 0 2px var(--glow-color);
+            font-size: 1.5em;
+            margin: 0 0 15px;
+        }
+
+        /* Seção de Contadores */
+        .counters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .counter-box {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .counter-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .counter-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-shadow: 0 0 8px rgba(255, 235, 59, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .counter-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Seção de Link de Convite */
+        .invite-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .invite-box {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .invite-box p {
+            margin: 0 0 10px;
+            word-wrap: break-word;
+            font-size: 0.9em;
+            color: var(--primary-color);
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            width: 95%;
+        }
+
+        .copy-btn {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            background-color: #ffd700;
+        }
+
+        /* Seção da Roleta */
+        .roulette-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 25px;
+        }
+
+        .roulette-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 5px solid var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+        }
+
+        .segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%);
+            transform-origin: 50% 50%;
+            background-color: #ff416c;
+        }
+        
+        .segment-1 { background-color: #ff416c; transform: rotate(0deg); }
+        .segment-2 { background-color: #00bfff; transform: rotate(45deg); }
+        
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid var(--primary-color);
+            z-index: 10;
+        }
+
+        .spin-btn {
+            margin-top: 20px;
+            background-color: #3f51b5;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(63, 81, 181, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .spin-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Seção de Membros Detalhados */
+        .members-list-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 25px;
+        }
+
+        .team-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto; /* Adiciona barra de rolagem vertical apenas à lista de membros */
+            scrollbar-width: thin; /* Para Firefox */
+            scrollbar-color: var(--primary-color) #f1f1f1; /* Para Firefox */
+        }
+
+        /* Estilização da barra de rolagem para navegadores WebKit (Chrome, Safari) */
+        .team-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .team-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .team-list::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .team-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .member-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .member-number {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .status-level {
+            font-weight: bold;
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .status-level-1 { background-color: rgba(0, 255, 0, 0.2); color: #008000; }
+        .status-level-2 { background-color: rgba(255, 165, 0, 0.2); color: #b8860b; }
+        .status-level-inativo { background-color: rgba(255, 0, 0, 0.2); color: #ff0000; }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+
+    <div class="header">
+        <h1>Sua Equipe</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="counters-section">
+            <h2 class="section-title">Contabilização de Níveis</h2>
+            <div class="counters-grid">
+                <div class="counter-box">
+                    <span class="counter-value">{{ total_membros }}</span>
+                    <span class="counter-label">Membros Totais</span>
+                </div>
+                {% for nivel, count in niveis_contagem.items %}
+                <div class="counter-box">
+                    <span class="counter-value">{{ count }}</span>
+                    <span class="counter-label">Nível {{ nivel }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="roulette-section">
+            <h2 class="section-title">Roleta de Energia</h2>
+            <div class="roulette-container">
+                <div class="wheel" id="wheel">
+                    <div class="segment segment-1"></div>
+                    <div class="segment segment-2"></div>
+                </div>
+                <div class="pointer"></div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()">Girar Roleta!</button>
+        </div>
+
+        <div class="invite-section">
+            <h2 class="section-title">Seu Link de Convite</h2>
+            <div class="invite-box">
+                <p id="invite-link">{{ link_convite }}</p>
+                <button class="copy-btn" onclick="copyLink()">Copiar Link</button>
+            </div>
+        </div>
+
+        <div class="members-list-section">
+            <h2 class="section-title">Membros Detalhados</h2>
+            <ul class="team-list">
+                {% if equipa_membros %}
+                    {% for membro in equipa_membros %}
+                    <li class="team-item">
+                        <div class="member-details">
+                            <span class="member-number">ID: {{ membro.id }}</span>
+                        </div>
+                        <span class="status-level status-level-{{ membro.nivel.numero|default:"inativo" }}">
+                            Nível {{ membro.nivel.numero|default:"Inativo" }}
+                        </span>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #666; text-align: center;">Nenhum membro na sua equipe ainda.</p>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function copyLink() {
+            const linkElement = document.getElementById('invite-link');
+            const linkText = linkElement.innerText;
+            navigator.clipboard.writeText(linkText).then(() => {
+                alert('Link de convite copiado!');
+            }).catch(err => {
+                console.error('Erro ao copiar o link: ', err);
+            });
+        }
+        
+        function spinWheel() {
+            const wheel = document.getElementById('wheel');
+            const degrees = Math.floor(Math.random() * 360) + 3600;
+            wheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            wheel.style.transform = `rotate(${degrees}deg)`;
+        }
+    </script>
+</body>
+</html>

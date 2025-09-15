@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renda - ELETROBRAS</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Animação para o brilho pulsante dos valores */
+        @keyframes pulse-glow-white {
+            0% { text-shadow: 0 0 5px rgba(0, 255, 0, 0.4); }
+            50% { text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.6); }
+            100% { text-shadow: 0 0 5px rgba(0, 255, 0, 0.4); }
+        }
+
+        body {
+            background-color: #ffffff; /* Fundo branco */
+            
+            color: #000; /* Cor do texto principal alterada para preto */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            text-align: center;
+            padding-bottom: 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .header {
+            width: 100%;
+            padding: 20px;
+            color: #0d0b2b; /* Título em azul escuro para contraste */
+            text-shadow: none; /* Remove o brilho do título */
+            font-size: 1.8em;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            background: linear-gradient(180deg, rgba(20, 40, 80, 0.1), rgba(20, 40, 80, 0)); /* Gradiente sutil */
+            padding-bottom: 40px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        .income-container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9); /* Fundo dos cards quase branco */
+            backdrop-filter: blur(5px);
+            border-radius: 25px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* Novo estilo para o grid de itens */
+        .income-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Adaptação para duas colunas em telas maiores */
+        @media (min-width: 600px) {
+            .income-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .income-item:nth-child(5) {
+                grid-column: span 2;
+                max-width: 50%;
+                justify-self: center; /* Centraliza o item de "Total Sacado" */
+            }
+        }
+
+        .income-container h2 {
+            color: #0d0b2b; /* Título dos cards em azul escuro */
+            text-shadow: none; /* Remove o brilho */
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .income-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f0f0f0; /* Fundo dos cards em cinza claro para contraste */
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .income-item:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-color: #ffc0cb !important;
+        }
+        
+        .income-item strong {
+            font-size: 1.2em;
+            color: #0d0b2b; /* Títulos em azul escuro */
+            margin-bottom: 8px;
+            text-shadow: none;
+            text-align: center;
+        }
+
+        .value-display {
+            font-size: 1.8em;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            animation: pulse-glow-white 2s infinite ease-in-out alternate; /* Aplica a nova animação */
+            text-align: center;
+            color: #00ff00; /* Cor verde com brilho */
+        }
+        
+        /* Cores das bordas e valores */
+        .level-item { border-color: #a7d9ff; }
+        .deposits-item { border-color: #4dc2f5; }
+        .balance-item { border-color: #69f0ae; }
+        .subsidy-item { border-color: #ffee58; }
+        .withdrawn-item { border-color: #ff7043; }
+        
+        /* Remove as cores específicas dos valores para aplicar a cor geral */
+        .deposits-value,
+        .positive-value,
+        .subsidy-value,
+        .withdrawn-value {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            .income-container {
+                padding: 20px;
+            }
+            .income-item {
+                padding: 18px;
+            }
+            .income-item strong {
+                font-size: 1.1em;
+            }
+            .value-display {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Renda</h1>
+    </div>
+
+    <div class="income-container">
+        <h2>Visão Geral da Renda</h2>
+        <div class="income-grid">
+            <div class="income-item level-item">
+                <strong>Nível do Cliente:</strong>
+                <span class="value-display">{{ nivel_cliente|cut:"(Sem nível alugado)"|striptags }}</span>
+            </div>
+            <div class="income-item deposits-item">
+                <strong>Depósitos Aprovados:</strong>
+                <span class="value-display deposits-value">{{ depositos_aprovados|floatformat:2 }} KZ</span>
+            </div>
+            <div class="income-item balance-item">
+                <strong>Saldo Disponível:</strong>
+                <span class="value-display positive-value">{{ saldo_disponivel|floatformat:2 }} KZ</span>
+            </div>
+            <div class="income-item subsidy-item">
+                <strong>Saldo de Subsídios:</strong>
+                <span class="value-display subsidy-value">{{ saldo_subsidio|floatformat:2 }} KZ</span>
+            </div>
+            <div class="income-item withdrawn-item">
+                <strong>Total Sacado:</strong>
+                <span class="value-display withdrawn-value">{{ total_sacado|floatformat:2 }} KZ</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

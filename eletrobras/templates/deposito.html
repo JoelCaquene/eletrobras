@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depósito - ELETROBRAS</title>
+    <link rel="stylesheet" href="{% static 'eletrobras/css/deposito.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="light-effect" id="light-effect"></div>
+    <div class="spark-effect" id="spark-effect"></div>
+
+    <header>
+        <div class="header-title">Depósito</div>
+    </header>
+
+    <div class="main-container">
+        <div class="deposit-form-container">
+            {% if not banco_selecionado %}
+                <div id="step-1" class="step active">
+                    <h2 class="step-title">⚡ Selecione o Banco</h2>
+                    <p class="step-description">Escolha um dos bancos disponíveis para visualizar os dados de transferência.</p>
+                    
+                    <form id="form-step-1" action="{% url 'deposito' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="method">Banco:</label>
+                            <select id="method" name="method" required>
+                                <option value="">Selecione um banco</option>
+                                {% for banco in bancos %}
+                                    <option value="{{ banco.nome_banco }}">{{ banco.nome_banco }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="valor_deposito">Valor do Depósito (KZ):</label>
+                            <input type="number" id="valor_deposito" name="valor_deposito" placeholder="Digite o valor" step="0.01" min="0" required>
+                        </div>
+                        <button type="submit" class="submit-btn">A SEGUIR</button>
+                    </form>
+                </div>
+            {% else %}
+                <div id="step-2" class="step active">
+                    <h2 class="step-title">⚡ Dados para o Depósito</h2>
+                    <p class="step-description">Copie os dados abaixo e realize a transferência do valor exato de <strong>{{ valor_deposito }} KZ</strong>.</p>
+                    <div class="bank-details-info">
+                        <p><strong>Banco:</strong> {{ banco_selecionado.nome_banco }}</p>
+                        <p><strong>Nome do Titular:</strong> {{ banco_selecionado.nome_titular_conta }}</p>
+                        <div class="iban-group">
+                            <span><strong>IBAN:</strong> <span id="iban-text">{{ banco_selecionado.iban }}</span></span>
+                            <button type="button" class="copy-btn" onclick="copiarIBAN()">Copiar</button>
+                        </div>
+                    </div>
+                    <button type="button" class="submit-btn" onclick="showUploadStep('{{ valor_deposito }}')">JÁ FIZ O PAGAMENTO</button>
+                </div>
+                <div id="step-3" class="step" style="display: none;">
+                    <h2 class="step-title">⚡ Enviar Comprovante</h2>
+                    <p class="step-description">Agora, insira seus dados e anexe o comprovante para validarmos seu depósito.</p>
+                    <form id="form-step-3" action="{% url 'deposito' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="valor_deposito" id="hidden_valor_deposito">
+                        <input type="hidden" name="banco_selecionado_nome" value="{{ banco_selecionado.nome_banco }}">
+                        <div class="form-group">
+                            <label for="depositor_name">Seu Nome Completo:</label>
+                            <input type="text" id="depositor_name" name="depositor_name" placeholder="Digite seu nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="proof">Comprovante de Depósito:</label>
+                            <input type="file" id="proof" name="proof" required>
+                        </div>
+                        <button type="submit" class="submit-btn">ENVIAR COMPROVANTE</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if messages %}
+        <div class="message-container">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        function copiarIBAN() {
+            var ibanText = document.getElementById("iban-text").innerText;
+            navigator.clipboard.writeText(ibanText).then(function() {
+                alert("IBAN copiado para a área de transferência!");
+            }, function(err) {
+                console.error("Erro ao copiar: ", err);
+            });
+        }
+        
+        function showUploadStep(valor) {
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('step-3').style.display = 'block';
+            document.getElementById('hidden_valor_deposito').value = valor;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efeito de luzes aleatórias
+            const lightContainer = document.getElementById('light-effect');
+            function createRandomLights() {
+                for (let i = 0; i < 30; i++) {
+                    const light = document.createElement('div');
+                    light.className = 'light-bulb';
+                    light.style.width = light.style.height = `${Math.random() * 20 + 10}px`;
+                    light.style.top = `${Math.random() * 100}%`;
+                    light.style.left = `${Math.random() * 100}%`;
+                    light.style.animationDelay = `${Math.random() * 2}s`;
+                    lightContainer.appendChild(light);
+                }
+            }
+            createRandomLights();
+
+            // Efeito de faíscas
+            const sparkContainer = document.getElementById('spark-effect');
+            function createRandomSparks() {
+                for (let i = 0; i < 50; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    spark.style.width = spark.style.height = `${Math.random() * 3 + 1}px`;
+                    spark.style.top = `${Math.random() * 100}%`;
+                    spark.style.left = `${Math.random() * 100}%`;
+                    spark.style.animationDelay = `${Math.random() * 3}s`;
+                    sparkContainer.appendChild(spark);
+                }
+            }
+            createRandomSparks();
+        });
+    </script>
+</body>
+</html>

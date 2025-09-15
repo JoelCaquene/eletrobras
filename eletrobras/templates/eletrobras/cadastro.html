@@ -1,0 +1,400 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - ELETROBRAS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+        :root {
+            --cor-fundo-principal: #ffffff; /* Fundo branco */
+            --cor-brilho: rgba(255, 255, 255, 0.6);
+            --cor-card-fundo: rgba(255, 255, 255, 0.9);
+            --cor-borda-input: #e0e0e0;
+            --cor-placeholder: #616161;
+            --cor-destaque-1: #ffc107; /* Amarelo */
+            --cor-destaque-2: #ff9800; /* Laranja âmbar */
+            --cor-texto-escuro: #212121;
+            --cor-botao-cadastro: linear-gradient(45deg, var(--cor-destaque-1), var(--cor-destaque-2));
+            --cor-shadow-card: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--cor-fundo-principal);
+            color: var(--cor-texto-escuro);
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto; /* Adicionado para permitir rolagem vertical */
+            animation: fundoBrilho 10s infinite alternate;
+        }
+
+        @keyframes fundoBrilho {
+            0% {
+                background-color: #ffffff;
+            }
+            100% {
+                background-color: #f0f0f0;
+            }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("https://images.unsplash.com/photo-1579294247481-9b1695427d14?q=80&w=2070&auto=format&fit=crop");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: -1;
+            filter: grayscale(100%) brightness(150%);
+        }
+
+        .title-platform {
+            font-size: 4.5em;
+            font-weight: 700;
+            color: var(--cor-destaque-1);
+            text-shadow: 0 0 20px var(--cor-destaque-1), 0 0 40px var(--cor-destaque-2);
+            letter-spacing: 5px;
+            margin-bottom: 50px;
+            position: relative;
+            text-transform: uppercase;
+            animation: piscaAmarelo 0.8s infinite alternate;
+        }
+
+        @keyframes piscaAmarelo {
+            0% {
+                text-shadow: 0 0 10px var(--cor-destaque-1), 0 0 20px var(--cor-destaque-2);
+            }
+            100% {
+                text-shadow: 0 0 25px var(--cor-destaque-1), 0 0 50px var(--cor-destaque-2);
+            }
+        }
+        
+        .title-platform::before, .title-platform::after {
+            content: '';
+            position: absolute;
+            background-color: transparent;
+            border-radius: 50%;
+            animation: pulsoLuz 2s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        .title-platform::before {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: -50px;
+            transform: translateY(-50%);
+            box-shadow: 0 0 50px 30px var(--cor-destaque-1);
+            animation-delay: 0s;
+        }
+
+        .title-platform::after {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            right: -50px;
+            transform: translateY(-50%);
+            box-shadow: 0 0 50px 30px var(--cor-destaque-2);
+            animation-delay: 1s;
+        }
+
+        @keyframes pulsoLuz {
+            0% {
+                transform: scale(0.5);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(0.5);
+                opacity: 0.8;
+            }
+        }
+
+        .container {
+            background: var(--cor-card-fundo);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1.2s ease-out 0.5s backwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: var(--cor-texto-escuro);
+            font-weight: 700;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: calc(100% - 40px);
+            padding: 18px 20px;
+            border: 2px solid var(--cor-borda-input);
+            border-radius: 12px;
+            background-color: #f9f9f9;
+            color: var(--cor-texto-escuro);
+            font-size: 1.1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input::placeholder {
+            color: var(--cor-placeholder);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--cor-destaque-1);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cor-placeholder);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--cor-destaque-1);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            background: var(--cor-botao-cadastro);
+            color: var(--cor-texto-escuro);
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            animation: pulsoBotaoEletrico 1.8s infinite;
+        }
+
+        @keyframes pulsoBotaoEletrico {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 12px 35px rgba(255, 152, 0, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            }
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.6);
+        }
+
+        .nav-link {
+            display: block;
+            margin-top: 35px;
+            color: var(--cor-destaque-1);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .nav-link:hover {
+            color: var(--cor-destaque-2);
+            text-shadow: 0 0 10px var(--cor-destaque-2);
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .messages li {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: white;
+        }
+
+        .messages li.success {
+            background-color: #28a745;
+        }
+
+        .messages li.error {
+            background-color: #dc3545;
+        }
+
+        /* Efeitos de partículas de energia */
+        .energia-particula {
+            position: fixed;
+            background-color: var(--cor-destaque-1);
+            border-radius: 50%;
+            animation: moveParticula 15s infinite linear, fadeParticula 5s infinite alternate;
+            opacity: 0;
+            z-index: 0;
+        }
+
+        @keyframes moveParticula {
+            0% {
+                transform: translate(calc(var(--rand-x) * 100vw), calc(var(--rand-y) * 100vh));
+            }
+            100% {
+                transform: translate(calc(var(--rand-x-end) * 100vw), calc(var(--rand-y-end) * 100vh));
+            }
+        }
+
+        @keyframes fadeParticula {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title-platform">eletrobras</div>
+    <div class="container">
+        <h2>Criar Nova Conta</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="tel" name="phone_number" placeholder="Número de Telefone" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" id="password" placeholder="Senha (Mínimo 4 dígitos)" minlength="4" required>
+                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password_confirm" id="password_confirm" placeholder="Confirmar Senha" minlength="4" required>
+                <i class="fas fa-eye toggle-password" id="togglePasswordConfirm"></i>
+            </div>
+            <div class="input-group">
+                <input type="text" name="invitation_code" placeholder="Código de Convite (opcional)"
+                         value="{{ request.GET.convite|default:'' }}">
+            </div>
+            <button type="submit">Cadastrar</button>
+        </form>
+        <a href="{% url 'login' %}" class="nav-link">Já tem uma conta? Entrar</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const conviteCode = urlParams.get('convite');
+            if (conviteCode) {
+                document.querySelector('input[name="invitation_code"]').value = conviteCode;
+            }
+
+            const togglePassword = document.querySelector('#togglePassword');
+            const password = document.querySelector('#password');
+            
+            if (togglePassword && password) {
+                togglePassword.addEventListener('click', function (e) {
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+
+            const togglePasswordConfirm = document.querySelector('#togglePasswordConfirm');
+            const passwordConfirm = document.querySelector('#password_confirm');
+
+            if (togglePasswordConfirm && passwordConfirm) {
+                togglePasswordConfirm.addEventListener('click', function (e) {
+                    const type = passwordConfirm.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordConfirm.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+
+            const numParticulas = 30;
+            const body = document.body;
+
+            for (let i = 0; i < numParticulas; i++) {
+                const particula = document.createElement('div');
+                particula.classList.add('energia-particula');
+                
+                const size = Math.random() * 8 + 3;
+                particula.style.width = `${size}px`;
+                particula.style.height = `${size}px`;
+                particula.style.backgroundColor = i % 2 === 0 ? 'var(--cor-destaque-1)' : 'var(--cor-destaque-2)'; /* Alterna cores */
+
+                const delay = Math.random() * 10;
+                particula.style.animationDelay = `${delay}s`;
+
+                particula.style.setProperty('--rand-x', Math.random() * 2 - 0.5);
+                particula.style.setProperty('--rand-y', Math.random() * 2 - 0.5);
+                particula.style.setProperty('--rand-x-end', Math.random() * 2 - 0.5);
+                particula.style.setProperty('--rand-y-end', Math.random() * 2 - 0.5);
+
+                body.appendChild(particula);
+            }
+        });
+    </script>
+</body>
+</html>

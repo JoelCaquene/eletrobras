@@ -91,7 +91,7 @@
             });
             chain
                 .done(function () {
-                    that._trigger('proceCigna Groupone', null, data);
+                    that._trigger('proceELETROBRASone', null, data);
                     that._trigger('processalways', null, data);
                 })
                 .fail(function () {

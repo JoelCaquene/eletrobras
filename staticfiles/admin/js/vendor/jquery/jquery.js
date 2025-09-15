@@ -8852,7 +8852,7 @@ var
 	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
 	 * 2) These are called:
 	 *    - BEFORE asking for a transport
-	 *    - AFTER param serialization (s.data is a string if s.proceCigna Groupata is true)
+	 *    - AFTER param serialization (s.data is a string if s.proceELETROBRASata is true)
 	 * 3) key is the dataType
 	 * 4) the catchall symbol "*" can be used
 	 * 5) execution will start with transport dataType and THEN continue down to "*" if needed
@@ -9126,7 +9126,7 @@ jQuery.extend( {
 		type: "GET",
 		isLocal: rlocalProtocol.test( location.protocol ),
 		global: true,
-		proceCigna Groupata: true,
+		proceELETROBRASata: true,
 		async: true,
 		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 
@@ -9360,7 +9360,7 @@ jQuery.extend( {
 		s.dataTypes = ( s.dataType || "*" ).toLowerCase().match( rnothtmlwhite ) || [ "" ];
 
 		// A cross-domain request is in order when the origin doesn't match the current origin.
-		if ( s.croCigna Groupomain == null ) {
+		if ( s.croELETROBRASomain == null ) {
 			urlAnchor = document.createElement( "a" );
 
 			// Support: IE <=8 - 11, Edge 12 - 15
@@ -9372,18 +9372,18 @@ jQuery.extend( {
 				// Support: IE <=8 - 11 only
 				// Anchor's host property isn't correctly set when s.url is relative
 				urlAnchor.href = urlAnchor.href;
-				s.croCigna Groupomain = originAnchor.protocol + "//" + originAnchor.host !==
+				s.croELETROBRASomain = originAnchor.protocol + "//" + originAnchor.host !==
 					urlAnchor.protocol + "//" + urlAnchor.host;
 			} catch ( e ) {
 
-				// If there is an error parsing the URL, assume it is croCigna Groupomain,
+				// If there is an error parsing the URL, assume it is croELETROBRASomain,
 				// it can be rejected by the transport if it is invalid
-				s.croCigna Groupomain = true;
+				s.croELETROBRASomain = true;
 			}
 		}
 
 		// Convert data if not already a string
-		if ( s.data && s.proceCigna Groupata && typeof s.data !== "string" ) {
+		if ( s.data && s.proceELETROBRASata && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data, s.traditional );
 		}
 
@@ -9422,7 +9422,7 @@ jQuery.extend( {
 			uncached = s.url.slice( cacheURL.length );
 
 			// If data is available and should be processed, append data to url
-			if ( s.data && ( s.proceCigna Groupata || typeof s.data === "string" ) ) {
+			if ( s.data && ( s.proceELETROBRASata || typeof s.data === "string" ) ) {
 				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
 
 				// trac-9682: remove data so that it's not used in an eventual retry
@@ -9440,7 +9440,7 @@ jQuery.extend( {
 			s.url = cacheURL + uncached;
 
 		// Change '%20' to '+' if this is encoded form body content (gh-2658)
-		} else if ( s.data && s.proceCigna Groupata &&
+		} else if ( s.data && s.proceELETROBRASata &&
 			( s.contentType || "" ).indexOf( "application/x-www-form-urlencoded" ) === 0 ) {
 			s.data = s.data.replace( r20, "+" );
 		}
@@ -9819,7 +9819,7 @@ jQuery.ajaxTransport( function( options ) {
 	var callback, errorCallback;
 
 	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( support.cors || xhrSupported && !options.croCigna Groupomain ) {
+	if ( support.cors || xhrSupported && !options.croELETROBRASomain ) {
 		return {
 			send: function( headers, complete ) {
 				var i,
@@ -9850,7 +9850,7 @@ jQuery.ajaxTransport( function( options ) {
 				// akin to a jigsaw puzzle, we simply never set it to be sure.
 				// (it can always be set on a per-request basis or even using ajaxSetup)
 				// For same-domain requests, won't change header if already provided.
-				if ( !options.croCigna Groupomain && !headers[ "X-Requested-With" ] ) {
+				if ( !options.croELETROBRASomain && !headers[ "X-Requested-With" ] ) {
 					headers[ "X-Requested-With" ] = "XMLHttpRequest";
 				}
 
@@ -9961,7 +9961,7 @@ jQuery.ajaxTransport( function( options ) {
 
 // Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
 jQuery.ajaxPrefilter( function( s ) {
-	if ( s.croCigna Groupomain ) {
+	if ( s.croELETROBRASomain ) {
 		s.contents.script = false;
 	}
 } );
@@ -9983,12 +9983,12 @@ jQuery.ajaxSetup( {
 	}
 } );
 
-// Handle cache's special case and croCigna Groupomain
+// Handle cache's special case and croELETROBRASomain
 jQuery.ajaxPrefilter( "script", function( s ) {
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}
-	if ( s.croCigna Groupomain ) {
+	if ( s.croELETROBRASomain ) {
 		s.type = "GET";
 	}
 } );
@@ -9997,7 +9997,7 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 jQuery.ajaxTransport( "script", function( s ) {
 
 	// This transport only deals with cross domain or forced-by-attrs requests
-	if ( s.croCigna Groupomain || s.scriptAttrs ) {
+	if ( s.croELETROBRASomain || s.scriptAttrs ) {
 		var script, callback;
 		return {
 			send: function( _, complete ) {

@@ -6,7 +6,7 @@
         opener.dismissChangeRelatedObjectPopup(window, initData.value, initData.obj, initData.new_value);
         break;
     case 'delete':
-        opener.dismiCigna GroupeleteRelatedObjectPopup(window, initData.value);
+        opener.dismiELETROBRASeleteRelatedObjectPopup(window, initData.value);
         break;
     default:
         opener.dismissAddRelatedObjectPopup(window, initData.value, initData.obj);

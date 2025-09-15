@@ -278,7 +278,7 @@
 
             // The plugin options are used as settings object for the ajax calls.
             // The following are jQuery ajax settings required for the file uploads:
-            proceCigna Groupata: false,
+            proceELETROBRASata: false,
             contentType: false,
             cache: false,
             timeout: 0

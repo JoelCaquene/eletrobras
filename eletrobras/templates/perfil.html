@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - ELETROBRAS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cor-fundo-principal: #F0F2F5; /* Branco suave */
+            --cor-card-fundo: #FFFFFF;
+            --cor-borda-card: #E0E0E0;
+            --cor-destaque-1: #2563EB; /* Azul vibrante */
+            --cor-destaque-2: #10B981; /* Verde fresco */
+            --cor-texto-claro: #333333;
+            --cor-texto-escuro: #666666;
+            --cor-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --cor-input-borda: #D1D5DB;
+            --cor-input-fundo: #F9FAFB;
+        }
+
+        body {
+            background-color: var(--cor-fundo-principal);
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Espaço para o footer */
+        }
+        
+        .header {
+            width: 100%;
+            padding: 20px;
+            background: var(--cor-card-fundo);
+            border-bottom: 1px solid var(--cor-borda-card);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            color: var(--cor-destaque-1);
+            font-size: 1.8em;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .profile-card {
+            background: var(--cor-card-fundo);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--cor-shadow-card);
+            width: 90%;
+            max-width: 550px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-card h2 {
+            color: var(--cor-destaque-1);
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .section-separator {
+            width: 100%;
+            height: 1px;
+            background-color: var(--cor-borda-card);
+            margin: 30px 0;
+        }
+
+        .profile-info, .bank-info {
+            display: grid;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .info-item {
+            padding: 15px;
+            background-color: var(--cor-input-fundo);
+            border: 1px solid var(--cor-input-borda);
+            border-radius: 10px;
+        }
+
+        .info-item .label {
+            font-size: 0.9em;
+            color: var(--cor-texto-escuro);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--cor-texto-claro);
+        }
+
+        .empty-state {
+            color: #EF4444; /* Vermelho para destaque de aviso */
+            font-style: italic;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .edit-button, .menu-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            background-image: linear-gradient(45deg, var(--cor-destaque-1), var(--cor-destaque-2));
+            color: #FFFFFF;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            margin-top: 30px;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .edit-button:hover, .menu-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 10px 12px 30px rgba(0, 0, 0, 0.15);
+        }
+        .menu-button {
+            margin-top: 15px;
+            background-image: none;
+            background-color: #6B7280;
+        }
+        .menu-button:hover {
+            background-color: #4B5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Perfil</h1>
+    </div>
+
+    <div class="profile-card">
+        <h2>Minhas Informações</h2>
+        <div class="profile-info">
+            <div class="info-item">
+                <span class="label">Número</span>
+                <span class="value">{{ usuario.phone_number }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Código de Convite</span>
+                <span class="value">{{ usuario.invitation_code }}</span>
+            </div>
+        </div>
+
+        <div class="section-separator"></div>
+
+        <h2>Coordenadas Bancárias</h2>
+        <div class="bank-info">
+            {% if client_bank_details %}
+                <div class="info-item">
+                    <span class="label">Nome do Banco</span>
+                    <span class="value">{{ client_bank_details.nome_banco }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Nome do Titular</span>
+                    <span class="value">{{ client_bank_details.nome_titular_conta }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">IBAN</span>
+                    <span class="value">{{ client_bank_details.iban }}</span>
+                </div>
+            {% else %}
+                <p class="empty-state">Nenhuma coordenada bancária cadastrada.</p>
+            {% endif %}
+        </div>
+        
+        <a href="{% url 'editar_coordenadas_bancarias' %}">
+            <button type="button" class="edit-button">
+                {% if client_bank_details %}
+                    Editar Coordenadas
+                {% else %}
+                    Adicionar Coordenadas
+                {% endif %}
+            </button>
+        </a>
+
+        <a href="{% url 'menu' %}">
+            <button type="button" class="menu-button">
+                Menu
+            </button>
+        </a>
+    </div>
+
+</body>
+</html>

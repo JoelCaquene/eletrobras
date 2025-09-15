@@ -1,0 +1,317 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - ELETROBRAS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            background-image: radial-gradient(circle, #ffffff 10%, #e0eafc 100%);
+            color: #333;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: moveLight1 10s infinite alternate ease-in-out;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: 0;
+            animation: moveLight2 12s infinite alternate ease-in-out;
+        }
+        @keyframes moveLight1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100vw, 100vh) scale(1.2); }
+        }
+        @keyframes moveLight2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-100vw, -100vh) scale(1.1); }
+        }
+        .header {
+            width: 100%;
+            padding: 20px;
+            color: #1a237e;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 30px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        .edit-profile-container {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 550px;
+            margin-top: 40px;
+            margin-bottom: 120px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .edit-profile-container h2 {
+            color: #3f51b5;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        .form-group input {
+            width: calc(100% - 20px);
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background-color: #f9f9f9;
+            color: #333;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #3f51b5;
+            box-shadow: 0 0 8px rgba(63, 81, 181, 0.2);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            background-image: linear-gradient(45deg, #4CAF50, #2E8B57);
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 255, 0, 0.4);
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .messages li {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .messages li.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .messages li.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .errorlist {
+            color: #c62828;
+            list-style: none;
+            padding: 0;
+            margin-top: 8px;
+            font-size: 0.8em;
+            text-align: left;
+        }
+        .errorlist li {
+            margin-bottom: 5px;
+        }
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #757575;
+            font-size: 0.7em;
+            transition: color 0.3s, transform 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .footer-item img {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 2px #aaa);
+            transition: filter 0.3s;
+        }
+        .footer-item:hover {
+            color: #3f51b5;
+            transform: scale(1.1);
+        }
+        .footer-item:hover img {
+            filter: drop-shadow(0 0 5px #3f51b5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Editar Perfil</h1>
+    </div>
+
+    <div class="edit-profile-container">
+        <h2>Atualizar Informações</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ user_form.username.id_for_label }}">Nome de Usuário:</label>
+                {{ user_form.username }}
+                {% if user_form.username.errors %}
+                    <ul class="errorlist">
+                        {% for error in user_form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ bank_form.nome_banco.id_for_label }}">Nome do Banco:</label>
+                {{ bank_form.nome_banco }}
+                {% if bank_form.nome_banco.errors %}
+                    <ul class="errorlist">
+                        {% for error in bank_form.nome_banco.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ bank_form.nome_titular_conta.id_for_label }}">Nome do Titular da Conta:</label>
+                {{ bank_form.nome_titular_conta }}
+                {% if bank_form.nome_titular_conta.errors %}
+                    <ul class="errorlist">
+                        {% for error in bank_form.nome_titular_conta.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ bank_form.iban.id_for_label }}">IBAN:</label>
+                {{ bank_form.iban }}
+                {% if bank_form.iban.errors %}
+                    <ul class="errorlist">
+                        {% for error in bank_form.iban.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            {% if user_form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in user_form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            {% if bank_form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in bank_form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <button type="submit" class="submit-btn">Salvar Alterações</button>
+        </form>
+    </div>
+
+    <nav class="footer-nav">
+        <a href="{% url 'menu' %}" class="footer-item">
+            <img src="{% static 'eletrobras/images/icon_menu.png' %}" alt="Menu">
+            <span>MENU</span>
+        </a>
+        <a href="{% url 'nivel' %}" class="footer-item">
+            <img src="{% static 'eletrobras/images/icon_nivel.png' %}" alt="Nivel">
+            <span>NÍVEL</span>
+        </a>
+        <a href="{% url 'renda' %}" class="footer-item">
+            <img src="{% static 'eletrobras/images/icon_renda.png' %}" alt="Renda">
+            <span>RENDA</span>
+        </a>
+        <a href="{% url 'nos' %}" class="footer-item">
+            <img src="{% static 'eletrobras/images/icon_sobre.png' %}" alt="Sobre">
+            <span>SOBRE NÓS</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="footer-item">
+            <img src="{% static 'eletrobras/images/icon_perfil.png' %}" alt="Perfil">
+            <span>PERFIL</span>
+        </a>
+    </nav>
+</body>
+</html>

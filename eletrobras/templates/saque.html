@@ -1,0 +1,515 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saque - ELETROBRAS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+        /* Cores e Variáveis */
+        :root {
+            --cor-fundo-principal: #ffffff;
+            --cor-brilho: rgba(255, 255, 255, 0.6);
+            --cor-card-fundo: rgba(255, 255, 255, 0.9);
+            --cor-borda-input: #e0e0e0;
+            --cor-placeholder: #616161;
+            --cor-destaque-1: #ffc107; /* Amarelo */
+            --cor-destaque-2: #ff9800; /* Laranja âmbar */
+            --cor-texto-escuro: #212121;
+            --cor-botao-cadastro: linear-gradient(45deg, var(--cor-destaque-1), var(--cor-destaque-2));
+            --cor-shadow-card: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #28a745;
+            --cor-pendente: #ffc107;
+            --cor-rejeitado: #dc3545;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--cor-fundo-principal);
+            color: var(--cor-texto-escuro);
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            animation: fundoBrilho 10s infinite alternate;
+        }
+
+        @keyframes fundoBrilho {
+            0% { background-color: #ffffff; }
+            100% { background-color: #f0f0f0; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("https://images.unsplash.com/photo-1579294247481-9b1695427d14?q=80&w=2070&auto=format&fit=crop");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: -1;
+            filter: grayscale(100%) brightness(150%);
+        }
+
+        .container {
+            background: var(--cor-card-fundo);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--cor-shadow-card);
+            border: 1px solid #ddd;
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        h1, h2 {
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            text-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 3em;
+            text-transform: uppercase;
+            color: var(--cor-destaque-1);
+            text-shadow: 0 0 20px var(--cor-destaque-1), 0 0 40px var(--cor-destaque-2);
+            animation: piscaAmarelo 0.8s infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        @keyframes piscaAmarelo {
+            0% { text-shadow: 0 0 10px var(--cor-destaque-1), 0 0 20px var(--cor-destaque-2); }
+            100% { text-shadow: 0 0 25px var(--cor-destaque-1), 0 0 50px var(--cor-destaque-2); }
+        }
+
+        /* Seção de Informações Interativa */
+        .info-cards-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 180px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .info-card .icon {
+            font-size: 3em;
+            color: var(--cor-destaque-1);
+            margin-bottom: 10px;
+        }
+        
+        .info-card h3 {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .info-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--cor-card-fundo);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 450px;
+            text-align: left;
+            position: relative;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            cursor: pointer;
+            color: var(--cor-texto-escuro);
+            transition: color 0.3s;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--cor-rejeitado);
+        }
+
+        .modal-content h3 {
+            font-size: 1.8em;
+            text-align: center;
+            margin-top: 0;
+            color: var(--cor-destaque-1);
+        }
+
+        .modal-content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* Formulário de Saque */
+        .withdraw-form-container {
+            display: none; /* Inicia oculto */
+            margin-top: 30px;
+        }
+
+        .current-balance {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--cor-destaque-1);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--cor-destaque-1);
+        }
+
+        .form-group input {
+            width: calc(100% - 40px);
+            padding: 18px 20px;
+            border: 2px solid var(--cor-borda-input);
+            border-radius: 12px;
+            background-color: #f9f9f9;
+            color: var(--cor-texto-escuro);
+            font-size: 1.1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            background: var(--cor-botao-cadastro);
+            color: var(--cor-texto-escuro);
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            animation: pulsoBotaoEletrico 1.8s infinite;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            animation: none;
+            transform: none;
+        }
+
+        @keyframes pulsoBotaoEletrico {
+            0% { transform: scale(1); box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 12px 35px rgba(255, 152, 0, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4); }
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.6);
+        }
+
+        /* Histórico de Saques */
+        .history-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s;
+        }
+
+        .history-item:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .history-details p {
+            margin: 0;
+            font-size: 1em;
+        }
+
+        .history-details strong {
+            font-weight: 700;
+        }
+        
+        .history-status {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { color: var(--cor-pendente); animation: blink 1.5s infinite; }
+        .status-approved { color: var(--cor-sucesso); animation: blink 1.5s infinite; }
+        .status-rejected { color: var(--cor-rejeitado); }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .no-history {
+            text-align: center;
+            color: var(--cor-placeholder);
+            margin-top: 20px;
+        }
+        
+        .messages.error {
+            color: var(--cor-rejeitado);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SAQUE</h1>
+    
+    <div class="container">
+        <h2>Informações</h2>
+        <div class="info-cards-container">
+            <div class="info-card" id="info-saque">
+                <i class="fas fa-info-circle icon"></i>
+                <h3>Informações de Saque</h3>
+            </div>
+            <div class="info-card" id="info-perfil">
+                <i class="fas fa-user-circle icon"></i>
+                <h3>Preencher Perfil</h3>
+            </div>
+        </div>
+        
+        <div id="levantamento-card" class="info-card">
+            <i class="fas fa-wallet icon"></i>
+            <h3>Levantamento</h3>
+        </div>
+    </div>
+
+    <div id="saque-form-container" class="container withdraw-form-container">
+        <h2>Levantamento</h2>
+        <p class="current-balance">Saldo Disponível: {{ usuario.saldo_disponivel|floatformat:2 }} KZ</p>
+        
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        {% if not tem_detalhes_bancarios %}
+            <p class="messages error">Por favor, preencha suas coordenadas bancárias no seu perfil antes de solicitar um saque.</p>
+        {% else %}
+            <p id="saldo-insuficiente-aviso" class="messages error" style="display: none;">Saldo insuficiente para o saque. O saldo mínimo para saque é de {{ SAQUE_MINIMO }} KZ.</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'saque' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="number" id="amount" name="amount" min="{{ SAQUE_MINIMO }}" step="0.01" placeholder="Valor do Saque (KZ)" required>
+            </div>
+            
+            <button type="submit" id="submit-btn" class="submit-btn" disabled>Solicitar Saque</button>
+        </form>
+    </div>
+
+    <div id="history-container" class="container withdraw-form-container">
+        <h2>Histórico de Saques</h2>
+        <ul class="history-list">
+            {% for saque in historico_saques %}
+                <li class="history-item">
+                    <div class="history-details">
+                        <p><strong>Nº {{ forloop.counter }}</strong></p>
+                        <p><strong>Valor:</strong> {{ saque.valor|floatformat:2 }} KZ</p>
+                        <p><strong>Data:</strong> {{ saque.data_saque|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    <span class="history-status {% if saque.status == 'Aprovado' %}status-approved{% elif saque.status == 'Pendente' %}status-pending{% else %}status-rejected{% endif %}">
+                        {{ saque.status }}
+                    </span>
+                </li>
+            {% empty %}
+                <p class="no-history">Nenhuma solicitação de saque encontrada.</p>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div id="infoModal" class="info-modal">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h3 id="modal-title"></h3>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    
+    <nav class="footer-nav">
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const infoSaqueCard = document.getElementById('info-saque');
+            const infoPerfilCard = document.getElementById('info-perfil');
+            const levantamentoCard = document.getElementById('levantamento-card');
+            const infoModal = document.getElementById('infoModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseBtn = document.querySelector('.modal-close-btn');
+            
+            const saqueFormContainer = document.getElementById('saque-form-container');
+            const historyContainer = document.getElementById('history-container');
+            
+            // Novos elementos adicionados
+            const amountInput = document.getElementById('amount');
+            const submitBtn = document.getElementById('submit-btn');
+            const saldoInsuficienteAviso = document.getElementById('saldo-insuficiente-aviso');
+            const userBalance = parseFloat("{{ usuario.saldo_disponivel|floatformat:2 }}");
+            const minWithdrawal = parseFloat("{{ SAQUE_MINIMO }}");
+            const temDetalhesBancarios = "{{ tem_detalhes_bancarios }}" === "True";
+            
+
+            function validateForm() {
+                const amount = parseFloat(amountInput.value);
+                
+                // Remove o aviso de saldo insuficiente por padrão
+                saldoInsuficienteAviso.style.display = 'none';
+
+                // Verifica se o campo de valor está vazio ou não é um número válido
+                if (isNaN(amount) || amount <= 0) {
+                    submitBtn.disabled = true;
+                    return;
+                }
+                
+                // Validações
+                const hasSufficientBalance = amount <= userBalance;
+                const isAboveMinWithdrawal = amount >= minWithdrawal;
+                
+                // Exibe o aviso se o saldo for insuficiente
+                if (!hasSufficientBalance || !isAboveMinWithdrawal) {
+                    saldoInsuficienteAviso.style.display = 'block';
+                }
+
+                // Habilita ou desabilita o botão com base nas validações
+                const isButtonEnabled = temDetalhesBancarios && hasSufficientBalance && isAboveMinWithdrawal;
+                submitBtn.disabled = !isButtonEnabled;
+            }
+            
+            // Adiciona um listener para o evento 'input' no campo de valor
+            amountInput.addEventListener('input', validateForm);
+
+            // Conteúdo dos modais
+            const infoSaqueContent = `
+                <p><strong>Saque Mínimo:</strong> {{ SAQUE_MINIMO }} KZ</p>
+                <p><strong>Horário de Saque:</strong> {{ mensagem_horario }}</p>
+                <p><strong>Taxa de Saque:</strong> {{ TAXA_SAQUE }}%</p>
+            `;
+            
+            const infoPerfilContent = `
+                <p>Para solicitar um saque, é necessário ter o perfil preenchido com suas informações bancárias.</p>
+                <p>Acesse a seção de perfil para adicionar ou editar seus dados bancários, como nome do banco, número de conta e IBAN.</p>
+            `;
+
+            function showModal(title, content) {
+                modalTitle.textContent = title;
+                modalBody.innerHTML = content;
+                infoModal.style.display = 'flex';
+            }
+
+            infoSaqueCard.addEventListener('click', () => {
+                showModal('Informações de Saque', infoSaqueContent);
+            });
+
+            infoPerfilCard.addEventListener('click', () => {
+                showModal('Preencha seu Perfil', infoPerfilContent);
+            });
+
+            levantamentoCard.addEventListener('click', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('view', 'saque');
+                history.pushState(null, '', '?' + urlParams.toString());
+                
+                // Esconde os cards de informação e mostra a seção de saque
+                document.querySelector('.info-cards-container').style.display = 'none';
+                levantamentoCard.style.display = 'none';
+                saqueFormContainer.style.display = 'block';
+                historyContainer.style.display = 'block';
+                
+                // Garante que a validação seja executada na carga do formulário
+                validateForm();
+            });
+            
+            modalCloseBtn.addEventListener('click', () => {
+                infoModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target == infoModal) {
+                    infoModal.style.display = 'none';
+                }
+            });
+
+            // Lógica para mostrar a seção correta na carga da página
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('view') === 'saque') {
+                document.querySelector('.info-cards-container').style.display = 'none';
+                levantamentoCard.style.display = 'none';
+                saqueFormContainer.style.display = 'block';
+                historyContainer.style.display = 'block';
+                
+                // Garante que a validação seja executada na carga do formulário
+                validateForm();
+            }
+        });
+    </script>
+</body>
+</html>

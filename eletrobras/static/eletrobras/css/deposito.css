@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+/* Variáveis de cores da Eletrobras */
+:root {
+    --cor-eletro-azul: #007bff;
+    --cor-eletro-amarelo: #ffc107;
+    --cor-eletro-branco: #ffffff;
+    --cor-eletro-cinza: #6c757d;
+    --cor-texto-escuro: #212529;
+    --cor-sucesso: #28a745;
+    --cor-erro: #dc3545;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--cor-eletro-branco); /* Fundo branco para combinar com o design claro */
+    color: var(--cor-texto-escuro);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito de luzes piscando */
+.light-effect, .spark-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.light-bulb {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--cor-eletro-amarelo), 0 0 20px var(--cor-eletro-amarelo);
+    animation: flicker 1s infinite alternate;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.5; box-shadow: 0 0 10px var(--cor-eletro-amarelo), 0 0 20px var(--cor-eletro-amarelo); }
+    100% { opacity: 1; box-shadow: 0 0 15px var(--cor-eletro-amarelo), 0 0 30px var(--cor-eletro-amarelo); }
+}
+
+/* Efeito de faíscas */
+.spark {
+    position: absolute;
+    background-color: var(--cor-eletro-amarelo);
+    border-radius: 50%;
+    opacity: 0;
+    animation: spark-fly 2s linear infinite;
+    transform: scale(0);
+}
+
+@keyframes spark-fly {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+        box-shadow: 0 0 5px var(--cor-eletro-amarelo);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0);
+        box-shadow: 0 0 20px var(--cor-eletro-amarelo);
+    }
+}
+
+header {
+    width: 100%;
+    padding: 20px 0; /* Espaçamento do cabeçalho */
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border-bottom: none;
+}
+
+.header-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--cor-eletro-azul);
+    text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.main-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha o conteúdo ao topo do container */
+    padding-top: 0; /* Remove o padding extra para subir */
+    flex-grow: 1; /* Permite que o container ocupe o espaço restante */
+}
+
+.deposit-form-container {
+    width: 95%;
+    max-width: 500px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--cor-eletro-azul);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease-out;
+    position: relative;
+    z-index: 1;
+}
+
+/* O restante do CSS para formulários, botões, etc. */
+.step-title {
+    font-size: 1.8rem;
+    color: var(--cor-eletro-azul);
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.step-description {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--cor-eletro-azul);
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--cor-eletro-branco);
+    background-color: var(--cor-eletro-azul);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(0, 123, 255, 0.4);
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 15px;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 123, 255, 0.6);
+}
+
+.bank-details-info {
+    text-align: left;
+    margin-bottom: 25px;
+    padding: 20px;
+    border: 1px dashed var(--cor-eletro-azul);
+    border-radius: 15px;
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.bank-details-info p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+.bank-details-info strong {
+    color: var(--cor-eletro-azul);
+}
+
+.iban-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.iban-group span {
+    font-weight: bold;
+    color: #333;
+    word-break: break-all;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.copy-btn {
+    background-color: var(--cor-eletro-amarelo);
+    color: #333;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.copy-btn:hover {
+    background-color: #e0ac00;
+    transform: scale(1.05);
+}
+
+.message-container {
+    width: 95%;
+    max-width: 500px;
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.alert.success {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: var(--cor-sucesso);
+    border-color: var(--cor-sucesso);
+}
+
+.alert.error {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: var(--cor-erro);
+    border-color: var(--cor-erro);
+}

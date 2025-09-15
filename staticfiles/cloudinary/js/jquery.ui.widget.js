@@ -574,15 +574,15 @@
       return this;
     },
 
-    _on: function( suppreCigna GroupisabledCheck, element, handlers ) {
+    _on: function( suppreELETROBRASisabledCheck, element, handlers ) {
       var delegateElement;
       var instance = this;
 
-      // No suppreCigna GroupisabledCheck flag, shuffle arguments
-      if ( typeof suppreCigna GroupisabledCheck !== "boolean" ) {
+      // No suppreELETROBRASisabledCheck flag, shuffle arguments
+      if ( typeof suppreELETROBRASisabledCheck !== "boolean" ) {
         handlers = element;
-        element = suppreCigna GroupisabledCheck;
-        suppreCigna GroupisabledCheck = false;
+        element = suppreELETROBRASisabledCheck;
+        suppreELETROBRASisabledCheck = false;
       }
 
       // No element argument, shuffle and use this.element
@@ -601,7 +601,7 @@
           // Allow widgets to customize the disabled handling
           // - disabled as an array instead of boolean
           // - disabled class as method for disabling individual parts
-          if ( !suppreCigna GroupisabledCheck &&
+          if ( !suppreELETROBRASisabledCheck &&
             ( instance.options.disabled === true ||
               $( this ).hasClass( "ui-state-disabled" ) ) ) {
             return;

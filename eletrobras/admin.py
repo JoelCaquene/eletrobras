@@ -121,10 +121,26 @@ class NivelAlugadoAdmin(admin.ModelAdmin):
 
 @admin.register(Saque)
 class SaqueAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'valor', 'status', 'data_saque')
+    list_display = ('usuario', 'valor', 'status', 'data_saque', 'valor_liquido', 'iban_cliente')
     list_filter = ('status', 'data_saque')
     search_fields = ('usuario__phone_number', 'iban_cliente')
-    raw_id_fields = ('usuario',)
+    readonly_fields = ('data_saque', 'usuario', 'valor', 'valor_liquido', 'taxa', 'iban_cliente')
+    
+    @admin.action(description="Aprovar saques selecionados")
+    def aprovar_saque_action(self, request, queryset):
+        saques_aprovados = 0
+        for saque in queryset:
+            if saque.status == 'Pendente':
+                saque.status = 'Aprovado'
+                saque.save()
+                saques_aprovados += 1
+        
+        if saques_aprovados > 0:
+            self.message_user(request, f"{saques_aprovados} saque{pluralize(saques_aprovados)} aprovado{pluralize(saques_aprovados)} com sucesso.")
+        else:
+            self.message_user(request, "Nenhum saque pendente foi selecionado para aprovação.", level='warning')
+            
+    actions = [aprovar_saque_action]
 
 @admin.register(Renda)
 class RendaAdmin(admin.ModelAdmin):

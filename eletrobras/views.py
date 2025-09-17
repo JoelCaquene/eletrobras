@@ -223,33 +223,27 @@ def aprovar_deposito_com_subsidio(deposito_id):
 
 @login_required
 def saque_view(request):
-    """
-    Trata a exibição e a submissão de solicitações de saque (retirada) para o usuário.
-    Implementa validações de horário, saldo mínimo, saldo disponível e taxa de saque.
-    """
     usuario = request.user
     historico_saques = Saque.objects.filter(usuario=usuario).order_by('-data_saque')
 
     config = Config.objects.first()
     if not config:
-        messages.error(request, "Configurações da plataforma não encontradas. Por favor, contate o suporte.")
+        messages.error(request, "Configurações da eletrobras não encontradas. Por favor, contate o suporte.")
         return redirect('menu')
 
-    # Configurações de saque
     SAQUE_MINIMO = config.saque_minimo
-    TAXA_SAQUE = config.taxa_saque / 100 # Converte porcentagem para decimal
+    TAXA_SAQUE = config.taxa_saque / 100
     
-    # Configuração de fuso horário e horário de saque
     luanda_tz = pytz.timezone('Africa/Luanda')
     agora_luanda = datetime.now(luanda_tz)
     
+    # Validações de horário usando objetos time para precisão
     horario_inicio_saque = config.horario_saque_inicio
     horario_fim_saque = config.horario_saque_fim
     pode_sacar = horario_inicio_saque <= agora_luanda.time() <= horario_fim_saque
     
     mensagem_horario = f"Horário de saque permitido: {config.horario_saque_inicio.strftime('%H:%M')}h até {config.horario_saque_fim.strftime('%H:%M')}h (Horário de Angola)"
     
-    # Verifica se o usuário tem detalhes bancários cadastrados
     try:
         client_bank_details = ClientBankDetails.objects.get(usuario=usuario)
         tem_detalhes_bancarios = True
@@ -261,16 +255,14 @@ def saque_view(request):
         iban_cliente = None
 
     if request.method == 'POST':
-        # --- Processamento da Solicitação de Saque ---
-        
-        # 1. Validação de dados bancários
+        # Validação de dados bancários
         if not tem_detalhes_bancarios:
             messages.error(request, "Você precisa cadastrar suas informações bancárias para sacar.")
             return redirect('saque')
 
         valor_saque_bruto_str = request.POST.get('amount')
         
-        # 2. Validação de horário
+        # Validação de horário
         if not pode_sacar:
             messages.error(request, mensagem_horario)
             return redirect('saque')
@@ -280,59 +272,56 @@ def saque_view(request):
             return redirect('saque')
             
         try:
-            # Converte a string do valor para Decimal
             valor_saque_bruto = Decimal(valor_saque_bruto_str)
         except (ValueError, TypeError):
             messages.error(request, 'Valor de saque inválido.')
             return redirect('saque')
             
-        # 3. Validação do valor mínimo
+        # Validação do valor mínimo
         if valor_saque_bruto < SAQUE_MINIMO:
-            messages.error(request, f'O saque mínimo é de {SAQUE_MINIMO:.2f} KZ.')
+            messages.error(request, f'O saque mínimo é de {SAQUE_MINIMO} KZ.')
             return redirect('saque')
             
-        # 4. Validação de saldo (o saldo disponível deve cobrir o valor bruto do saque)
+        # Validação de saldo
         if valor_saque_bruto > usuario.saldo_disponivel:
-            messages.error(request, f'Saldo insuficiente. Saldo disponível: {usuario.saldo_disponivel:.2f} KZ. Valor solicitado: {valor_saque_bruto:.2f} KZ.')
+            messages.error(request, 'Saldo insuficiente para realizar o saque.')
             return redirect('saque')
         
-        # 5. Cálculo da taxa e valor líquido
         valor_taxa = valor_saque_bruto * TAXA_SAQUE
         valor_saque_liquido = valor_saque_bruto - valor_taxa
 
         try:
             with transaction.atomic():
-                # Debita o valor bruto (saque + taxa) do saldo do usuário
+                # Subtrai o valor bruto do saldo do usuário
                 usuario.saldo_disponivel -= valor_saque_bruto
                 
-                # Cria a solicitação de saque
+                # Cria a solicitação de saque com o valor bruto e armazena a taxa
                 Saque.objects.create(
                     usuario=usuario,
-                    valor=valor_saque_bruto,        # Valor Bruto
-                    valor_liquido=valor_saque_liquido, # Valor Líquido (a ser pago)
+                    valor=valor_saque_bruto,
+                    valor_liquido=valor_saque_liquido,
                     taxa=valor_taxa,
                     iban_cliente=iban_cliente,
                     nome_banco_cliente=nome_banco_cliente,
                     status='Pendente'
                 )
                 
-                # Atualiza o total sacado com o valor líquido (o que o usuário efetivamente recebe)
+                # Atualiza o total sacado com o valor líquido
                 usuario.total_sacado += valor_saque_liquido
                 usuario.save()
             
-            messages.success(request, f'Solicitação de saque de {valor_saque_bruto:.2f} KZ enviada com sucesso! Uma taxa de {valor_taxa:.2f} KZ foi aplicada. Valor a receber: {valor_saque_liquido:.2f} KZ. Aguarde a aprovação.')
+            messages.success(request, f'Solicitação de saque de {valor_saque_bruto:.2f} KZ enviada com sucesso! Uma taxa de {valor_taxa:.2f} KZ foi aplicada.')
             return redirect('saque')
             
         except Exception as e:
             messages.error(request, f'Ocorreu um erro ao solicitar o saque: {e}')
             return redirect('saque')
 
-    # --- Exibição da Página de Saque (GET) ---
     context = {
         'usuario': usuario,
         'historico_saques': historico_saques,
         'SAQUE_MINIMO': SAQUE_MINIMO,
-        'TAXA_SAQUE': TAXA_SAQUE * 100, # Envia a taxa em percentual para o template
+        'TAXA_SAQUE': TAXA_SAQUE * 100,
         'mensagem_horario': mensagem_horario,
         'tem_detalhes_bancarios': tem_detalhes_bancarios,
     }
@@ -579,8 +568,6 @@ def editar_coordenadas_bancarias(request):
             coordenadas.save()
             messages.success(request, 'Coordenadas bancárias atualizadas com sucesso!')
             return redirect('perfil')
-        else:
-            messages.error(request, 'Por favor, corrija os erros no formulário bancário.')
     else:
         bank_form = ClientBankDetailsForm(instance=client_bank_details)
     
@@ -705,3 +692,4 @@ def girar_roleta(request):
     except Exception as e:
         print(f"Erro ao girar a roleta: {e}")
         return JsonResponse({'status': 'error', 'message': f'Ocorreu um erro interno: {e}'}, status=500)
+        

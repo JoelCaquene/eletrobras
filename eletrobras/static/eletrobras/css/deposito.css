@@ -23,16 +23,15 @@ body {
     color: var(--text-color);
     font-family: var(--font-family);
     min-height: 100vh;
-    overflow-x: hidden;
-    /* Voltamos a 'auto' para permitir a rolagem em telas pequenas, mas corrigimos o deslocamento abaixo */
-    overflow-y: auto; 
+    /* CORREÇÃO FINAL: Definimos o overflow para hidden em todas as direções. */
+    overflow: hidden; 
     position: relative;
     
-    /* CORREÇÃO CRÍTICA 1: Removemos a herança de flexbox para garantir que o body da página de depósito funcione corretamente. */
+    /* Sobrepõe estilos herdados do menu.css */
     display: block; 
     align-items: initial;
     justify-content: initial;
-    padding-bottom: 0; /* O footer-nav do menu.css não deve influenciar esta página */
+    padding-bottom: 0; 
 }
 
 header {
@@ -55,20 +54,23 @@ header {
 }
 
 .main-container {
-    /* CORREÇÃO CRÍTICA 2: Usamos o padding-top para empurrar o conteúdo abaixo do header fixo. */
+    /* Usamos o padding-top para empurrar o conteúdo abaixo do header fixo. */
     padding-top: var(--header-height); 
     padding-bottom: 40px;
     
     display: flex;
     justify-content: center; /* Centraliza o card horizontalmente */
-    /* CORREÇÃO CRÍTICA 3: Centraliza verticalmente o formulário, resolvendo o problema da rolagem/deslocamento. */
+    /* Centraliza verticalmente o formulário */
     align-items: center; 
     
     width: 100%;
-    min-height: calc(100vh - var(--header-height)); /* Garante que o container use a altura restante da tela */
+    /* Garante que o container use a altura restante da tela */
+    min-height: calc(100vh - var(--header-height)); 
     
-    /* Esta linha é o que garante que o formulário seja centrado na tela visível, abaixo do header. */
     margin-top: 0; 
+    
+    /* Importante para garantir que o formulário não seja cortado por um overflow hidden */
+    overflow: hidden; 
 }
 
 .deposit-form-container {
@@ -83,9 +85,8 @@ header {
     border: 2px solid var(--primary-color);
     position: relative;
     z-index: 20;
-    /* CORREÇÃO CRÍTICA 4: Adicionamos margem negativa para puxar o formulário para cima na centralização e compensar o padding-top. */
+    /* Margem negativa para centralizar o formulário no centro VISÍVEL da tela, abaixo do header. */
     margin-top: calc(var(--header-height) / -2); 
-    /* Esta margem negativa "puxa" o formulário para o centro real da tela. */
 }
 
 @keyframes fadeIn {
@@ -132,7 +133,7 @@ header {
     border-radius: 10px;
     background-color: #333;
     color: var(--text-color);
-    font-size: 1em;
+    font-size: 1.2em;
     transition: all 0.3s ease;
 }
 

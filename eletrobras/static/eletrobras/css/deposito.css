@@ -48,13 +48,13 @@ header {
 }
 
 .main-container {
-    /* CORREÇÃO CRUCIAL: Adiciona padding superior para não ser escondido pelo header fixo */
-    padding-top: 100px; /* Ajuste este valor se o header for maior */
+    /* CORREÇÃO DE POSICIONAMENTO: Aumentando o padding para dar mais segurança e garantir que o conteúdo fique abaixo do header fixo. */
+    padding-top: 120px; /* Aumentado de 100px para 120px */
     padding-bottom: 40px; /* Garante espaço no final para rolagem */
     
     display: flex;
     justify-content: center; /* Centraliza o card horizontalmente */
-    align-items: flex-start; /* CORREÇÃO: Alinha o conteúdo (card) no topo da tela */
+    align-items: flex-start; /* CRUCIAL: Alinha o conteúdo (card) no topo, logo após o padding-top */
     
     width: 100%;
     min-height: 100vh; /* Garante que o contêiner principal ocupa pelo menos a altura da tela */
@@ -72,7 +72,8 @@ header {
     border: 2px solid var(--primary-color);
     position: relative;
     z-index: 20;
-    margin-top: 20px; /* Pequena margem superior dentro do main-container */
+    /* CORREÇÃO: Removemos a margem superior de 20px aqui para que ele comece imediatamente no topo do main-container (que já tem o padding de 120px). */
+    margin-top: 0; 
 }
 
 @keyframes fadeIn {
@@ -255,7 +256,7 @@ header {
 /* Estilo para as mensagens flash do Django e notificações customizadas */
 .message-container, .notification-container {
     position: fixed;
-    top: 100px; /* Ajustado para aparecer abaixo do header fixo e um pouco abaixo do topo */
+    top: 130px; /* Ajustado para aparecer abaixo do header fixo e um pouco abaixo do topo (120px + margem) */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -264,7 +265,7 @@ header {
 }
 
 .notification-container {
-    top: 100px; /* Garante que fique abaixo do header */
+    top: 130px; /* Garante que fique abaixo do header */
 }
 
 .notification {

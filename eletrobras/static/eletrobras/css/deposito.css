@@ -20,23 +20,22 @@ body {
     background-color: var(--background-dark);
     color: var(--text-color);
     font-family: var(--font-family);
-    /* Removido display: flex, height: 100vh e width: 100vw para permitir layout padrão e rolagem */
-    /* CORREÇÃO CRUCIAL: Permite que o body se estenda e role */
     min-height: 100vh;
-    overflow-x: hidden; /* Mantém a prevenção de rolagem horizontal pelos efeitos */
-    overflow-y: auto; /* Permite rolagem vertical quando necessário */
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
+    /* Garante que o fundo da Eletrobras (se for o caso) seja corretamente coberto */
 }
 
 header {
     width: 100%;
     padding: 20px;
-    position: fixed; /* Manteve fixo para navegação */
+    position: fixed; 
     top: 0;
     left: 0;
     background-color: var(--background-dark);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    z-index: 100; /* Alto z-index para garantir que fique por cima */
+    z-index: 100;
     text-align: center;
 }
 
@@ -48,16 +47,20 @@ header {
 }
 
 .main-container {
-    /* CORREÇÃO DE POSICIONAMENTO: Aumentando o padding para dar mais segurança e garantir que o conteúdo fique abaixo do header fixo. */
-    padding-top: 120px; /* Aumentado de 100px para 120px */
-    padding-bottom: 40px; /* Garante espaço no final para rolagem */
+    /* CORREÇÕES CRUCIAIS PARA ALINHAMENTO SUPERIOR */
+    
+    /* Padding Top: Deve ser suficiente para compensar o header fixo. 80px é uma boa base. */
+    padding-top: 100px; 
+    padding-bottom: 40px;
     
     display: flex;
     justify-content: center; /* Centraliza o card horizontalmente */
-    align-items: flex-start; /* CRUCIAL: Alinha o conteúdo (card) no topo, logo após o padding-top */
+    /* Garante que o conteúdo comece no topo, logo abaixo do padding-top. */
+    align-items: flex-start; 
     
     width: 100%;
-    min-height: 100vh; /* Garante que o contêiner principal ocupa pelo menos a altura da tela */
+    /* REMOVIDO: O min-height: 100vh aqui estava somando o padding-top, criando a rolagem indesejada. */
+    /* Se o conteúdo for maior que a tela, ele irá rolar naturalmente a partir do topo. */
 }
 
 .deposit-form-container {
@@ -72,7 +75,7 @@ header {
     border: 2px solid var(--primary-color);
     position: relative;
     z-index: 20;
-    /* CORREÇÃO: Removemos a margem superior de 20px aqui para que ele comece imediatamente no topo do main-container (que já tem o padding de 120px). */
+    /* Nenhuma margin-top desnecessária aqui. O alinhamento é controlado pelo main-container. */
     margin-top: 0; 
 }
 
@@ -202,7 +205,7 @@ header {
 
 /* Estilos para o efeito de fundo */
 .light-effect, .spark-effect {
-    position: fixed; /* Mudei para fixed para garantir que os efeitos não rolem com o conteúdo */
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
@@ -256,7 +259,7 @@ header {
 /* Estilo para as mensagens flash do Django e notificações customizadas */
 .message-container, .notification-container {
     position: fixed;
-    top: 130px; /* Ajustado para aparecer abaixo do header fixo e um pouco abaixo do topo (120px + margem) */
+    top: 110px; /* Ajustado para um valor ligeiramente maior que o padding-top de 100px */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
@@ -265,7 +268,7 @@ header {
 }
 
 .notification-container {
-    top: 130px; /* Garante que fique abaixo do header */
+    top: 110px; 
 }
 
 .notification {

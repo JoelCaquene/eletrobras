@@ -14,6 +14,8 @@
     --button-bg: #4caf50; /* Verde para A SEGUIR */
     --copy-btn-bg: #2196f3; /* Azul para Copiar */
     --font-family: 'Roboto', sans-serif;
+    /* Adicionamos uma variável para a altura do cabeçalho */
+    --header-height: 80px; 
 }
 
 body {
@@ -22,9 +24,15 @@ body {
     font-family: var(--font-family);
     min-height: 100vh;
     overflow-x: hidden;
-    /* CORREÇÃO CRÍTICA 1: Usamos 'hidden' no Y para remover qualquer rolagem extra, forçando o layout a caber na tela. */
-    overflow-y: hidden; 
+    /* Voltamos a 'auto' para permitir a rolagem em telas pequenas, mas corrigimos o deslocamento abaixo */
+    overflow-y: auto; 
     position: relative;
+    
+    /* CORREÇÃO CRÍTICA 1: Removemos a herança de flexbox para garantir que o body da página de depósito funcione corretamente. */
+    display: block; 
+    align-items: initial;
+    justify-content: initial;
+    padding-bottom: 0; /* O footer-nav do menu.css não deve influenciar esta página */
 }
 
 header {
@@ -47,20 +55,20 @@ header {
 }
 
 .main-container {
-    /* CORREÇÃO CRÍTICA 2: Ajustar o topo do contêiner para começar logo após o header. */
-    padding-top: 0; 
-    padding-bottom: 0;
-    /* CORREÇÃO CRÍTICA 3: Posiciona o main-container para ocupar o espaço não ocupado pelo header */
-    position: absolute;
-    top: 80px; /* Ajuste este valor para a altura exata do seu header, 80px é uma estimativa */
-    bottom: 0;
+    /* CORREÇÃO CRÍTICA 2: Usamos o padding-top para empurrar o conteúdo abaixo do header fixo. */
+    padding-top: var(--header-height); 
+    padding-bottom: 40px;
     
     display: flex;
     justify-content: center; /* Centraliza o card horizontalmente */
-    /* CORREÇÃO CRÍTICA 4: Alinha o card no centro verticalmente, como na imagem 2. */
+    /* CORREÇÃO CRÍTICA 3: Centraliza verticalmente o formulário, resolvendo o problema da rolagem/deslocamento. */
     align-items: center; 
     
     width: 100%;
+    min-height: calc(100vh - var(--header-height)); /* Garante que o container use a altura restante da tela */
+    
+    /* Esta linha é o que garante que o formulário seja centrado na tela visível, abaixo do header. */
+    margin-top: 0; 
 }
 
 .deposit-form-container {
@@ -75,7 +83,9 @@ header {
     border: 2px solid var(--primary-color);
     position: relative;
     z-index: 20;
-    margin-top: 0; /* O alinhamento é feito pelo main-container */
+    /* CORREÇÃO CRÍTICA 4: Adicionamos margem negativa para puxar o formulário para cima na centralização e compensar o padding-top. */
+    margin-top: calc(var(--header-height) / -2); 
+    /* Esta margem negativa "puxa" o formulário para o centro real da tela. */
 }
 
 @keyframes fadeIn {

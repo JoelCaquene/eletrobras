@@ -227,28 +227,47 @@ def saque_view(request):
     Trata a exibição e a submissão de solicitações de saque (retirada) para o usuário.
     Implementa validações de horário, saldo mínimo, saldo disponível e taxa de saque.
     """
+    # --- DEBUG START ---
+    print("--- INICIANDO SAQUE_VIEW (GET/POST) ---")
+    # --- DEBUG END ---
+
     usuario = request.user
-    historico_saques = Saque.objects.filter(usuario=usuario).order_by('-data_saque')
+    
+    # --- DEBUG START ---
+    print(f"Usuário logado: {usuario.phone_number}")
+    # --- DEBUG END ---
 
-    config = Config.objects.first()
-    if not config:
-        messages.error(request, "Configurações da plataforma não encontradas. Por favor, contate o suporte.")
-        return redirect('menu')
+    try:
+        historico_saques = Saque.objects.filter(usuario=usuario).order_by('-data_saque')
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao buscar histórico de saques: {e}")
+        raise e # Levanta o erro para que o log do servidor o capture
 
-    # Configurações de saque
-    SAQUE_MINIMO = config.saque_minimo
-    TAXA_SAQUE = config.taxa_saque / 100 # Converte porcentagem para decimal
+    try:
+        config = Config.objects.first()
+        if not config:
+            # Tratamento de erro já existente:
+            messages.error(request, "Configurações da plataforma não encontradas. Por favor, contate o suporte.")
+            return redirect('menu')
+
+        # Configurações de saque
+        SAQUE_MINIMO = config.saque_minimo
+        TAXA_SAQUE = config.taxa_saque / 100 # Converte porcentagem para decimal
     
-    # Configuração de fuso horário e horário de saque
-    luanda_tz = pytz.timezone('Africa/Luanda')
-    agora_luanda = datetime.now(luanda_tz)
+        # Configuração de fuso horário e horário de saque
+        luanda_tz = pytz.timezone('Africa/Luanda')
+        agora_luanda = datetime.now(luanda_tz)
     
-    horario_inicio_saque = config.horario_saque_inicio
-    horario_fim_saque = config.horario_saque_fim
-    pode_sacar = horario_inicio_saque <= agora_luanda.time() <= horario_fim_saque
+        horario_inicio_saque = config.horario_saque_inicio
+        horario_fim_saque = config.horario_saque_fim
+        pode_sacar = horario_inicio_saque <= agora_luanda.time() <= horario_fim_saque
     
-    mensagem_horario = f"Horário de saque permitido: {config.horario_saque_inicio.strftime('%H:%M')}h até {config.horario_saque_fim.strftime('%H:%M')}h (Horário de Angola)"
+        mensagem_horario = f"Horário de saque permitido: {config.horario_saque_inicio.strftime('%H:%M')}h até {config.horario_saque_fim.strftime('%H:%M')}h (Horário de Angola)"
     
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao buscar ou calcular Configurações/Horário: {e}")
+        raise e # Levanta o erro para que o log do servidor o capture
+        
     # Verifica se o usuário tem detalhes bancários cadastrados
     try:
         client_bank_details = ClientBankDetails.objects.get(usuario=usuario)
@@ -259,6 +278,14 @@ def saque_view(request):
         tem_detalhes_bancarios = False
         nome_banco_cliente = None
         iban_cliente = None
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao buscar ClientBankDetails: {e}")
+        raise e # Levanta o erro para que o log do servidor o capture
+
+    # --- DEBUG START ---
+    print(f"Config OK: Saque Mínimo {SAQUE_MINIMO}, Taxa {TAXA_SAQUE * 100}%")
+    print(f"Detalhes bancários cadastrados? {tem_detalhes_bancarios}")
+    # --- DEBUG END ---
 
     if request.method == 'POST':
         # --- Processamento da Solicitação de Saque ---
@@ -325,6 +352,7 @@ def saque_view(request):
             
         except Exception as e:
             messages.error(request, f'Ocorreu um erro ao solicitar o saque: {e}')
+            print(f"ERRO CRÍTICO ao salvar saque no banco de dados: {e}")
             return redirect('saque')
 
     # --- Exibição da Página de Saque (GET) ---
@@ -336,6 +364,11 @@ def saque_view(request):
         'mensagem_horario': mensagem_horario,
         'tem_detalhes_bancarios': tem_detalhes_bancarios,
     }
+    
+    # --- DEBUG START ---
+    print("--- SAQUE_VIEW CONCLUÍDA SEM ERROS, RENDERIZANDO TEMPLATE ---")
+    # --- DEBUG END ---
+
     return render(request, 'saque.html', context)
 
 

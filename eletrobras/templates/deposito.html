@@ -76,6 +76,10 @@
             {% endif %}
         </div>
     </div>
+    
+    <!-- Novo contêiner de notificações customizadas -->
+    <div id="notification-container" class="notification-container"></div>
+    
     {% if messages %}
         <div class="message-container">
             {% for message in messages %}
@@ -87,12 +91,43 @@
     {% endif %}
 
     <script>
+        // Função para mostrar notificação customizada (substitui alert)
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+            
+            // Remove a notificação após 3 segundos
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
         function copiarIBAN() {
             var ibanText = document.getElementById("iban-text").innerText;
+            // Usamos a cópia via execCommand como fallback, conforme boas práticas de iframe
+            if (!navigator.clipboard) {
+                const textarea = document.createElement('textarea');
+                textarea.value = ibanText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showNotification("IBAN copiado para a área de transferência!", 'success');
+                } catch (err) {
+                    showNotification("Erro ao copiar. Copie manualmente.", 'error');
+                }
+                document.body.removeChild(textarea);
+                return;
+            }
+
             navigator.clipboard.writeText(ibanText).then(function() {
-                alert("IBAN copiado para a área de transferência!");
+                showNotification("IBAN copiado para a área de transferência!", 'success');
             }, function(err) {
                 console.error("Erro ao copiar: ", err);
+                showNotification("Erro ao copiar. Copie manualmente.", 'error');
             });
         }
         

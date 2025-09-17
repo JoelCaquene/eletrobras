@@ -20,11 +20,11 @@ body {
     background-color: var(--background-dark);
     color: var(--text-color);
     font-family: var(--font-family);
+    /* Manter min-height aqui garante que o fundo cubra a tela, mesmo com pouco conteúdo */
     min-height: 100vh;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
-    /* Garante que o fundo da Eletrobras (se for o caso) seja corretamente coberto */
 }
 
 header {
@@ -47,10 +47,8 @@ header {
 }
 
 .main-container {
-    /* CORREÇÕES CRUCIAIS PARA ALINHAMENTO SUPERIOR */
-    
-    /* Padding Top: Deve ser suficiente para compensar o header fixo. 80px é uma boa base. */
-    padding-top: 100px; 
+    /* CORREÇÃO APLICADA: Ajusta o conteúdo para começar após o header fixo */
+    padding-top: 100px; /* Suficiente para compensar o header fixo */
     padding-bottom: 40px;
     
     display: flex;
@@ -59,8 +57,8 @@ header {
     align-items: flex-start; 
     
     width: 100%;
-    /* REMOVIDO: O min-height: 100vh aqui estava somando o padding-top, criando a rolagem indesejada. */
-    /* Se o conteúdo for maior que a tela, ele irá rolar naturalmente a partir do topo. */
+    /* CORREÇÃO CRUCIAL: REMOVIDO min-height: 100vh; que causava a rolagem extra. */
+    /* A altura será determinada pelo conteúdo e o body garante o min-height. */
 }
 
 .deposit-form-container {
@@ -75,7 +73,7 @@ header {
     border: 2px solid var(--primary-color);
     position: relative;
     z-index: 20;
-    /* Nenhuma margin-top desnecessária aqui. O alinhamento é controlado pelo main-container. */
+    /* Manter margin-top: 0; para garantir que o flexbox do main-container o controle. */
     margin-top: 0; 
 }
 
@@ -259,7 +257,7 @@ header {
 /* Estilo para as mensagens flash do Django e notificações customizadas */
 .message-container, .notification-container {
     position: fixed;
-    top: 110px; /* Ajustado para um valor ligeiramente maior que o padding-top de 100px */
+    top: 110px; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;

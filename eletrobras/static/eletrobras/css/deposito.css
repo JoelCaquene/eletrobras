@@ -20,10 +20,10 @@ body {
     background-color: var(--background-dark);
     color: var(--text-color);
     font-family: var(--font-family);
-    /* Manter min-height aqui garante que o fundo cubra a tela, mesmo com pouco conteúdo */
     min-height: 100vh;
     overflow-x: hidden;
-    overflow-y: auto;
+    /* CORREÇÃO CRÍTICA 1: Usamos 'hidden' no Y para remover qualquer rolagem extra, forçando o layout a caber na tela. */
+    overflow-y: hidden; 
     position: relative;
 }
 
@@ -47,18 +47,20 @@ header {
 }
 
 .main-container {
-    /* CORREÇÃO APLICADA: Ajusta o conteúdo para começar após o header fixo */
-    padding-top: 100px; /* Suficiente para compensar o header fixo */
-    padding-bottom: 40px;
+    /* CORREÇÃO CRÍTICA 2: Ajustar o topo do contêiner para começar logo após o header. */
+    padding-top: 0; 
+    padding-bottom: 0;
+    /* CORREÇÃO CRÍTICA 3: Posiciona o main-container para ocupar o espaço não ocupado pelo header */
+    position: absolute;
+    top: 80px; /* Ajuste este valor para a altura exata do seu header, 80px é uma estimativa */
+    bottom: 0;
     
     display: flex;
     justify-content: center; /* Centraliza o card horizontalmente */
-    /* Garante que o conteúdo comece no topo, logo abaixo do padding-top. */
-    align-items: flex-start; 
+    /* CORREÇÃO CRÍTICA 4: Alinha o card no centro verticalmente, como na imagem 2. */
+    align-items: center; 
     
     width: 100%;
-    /* CORREÇÃO CRUCIAL: REMOVIDO min-height: 100vh; que causava a rolagem extra. */
-    /* A altura será determinada pelo conteúdo e o body garante o min-height. */
 }
 
 .deposit-form-container {
@@ -73,8 +75,7 @@ header {
     border: 2px solid var(--primary-color);
     position: relative;
     z-index: 20;
-    /* Manter margin-top: 0; para garantir que o flexbox do main-container o controle. */
-    margin-top: 0; 
+    margin-top: 0; /* O alinhamento é feito pelo main-container */
 }
 
 @keyframes fadeIn {

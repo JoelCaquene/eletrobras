@@ -11,7 +11,9 @@ from .models import (
     Config, Usuario, Nivel, PlatformBankDetails, Deposito,
     ClientBankDetails, NivelAlugado, Saque, Renda, Tarefa, PremioSubsidio, Sobre
 )
-from .forms import UsuarioUpdateForm, ClientBankDetailsForm
+# A linha abaixo precisa ter o DepositoForm (deve ser criado no seu forms.py)
+from .forms import UsuarioUpdateForm, ClientBankDetailsForm, DepositoForm 
+
 from django.db import IntegrityError
 from datetime import timedelta, datetime
 from django.utils import timezone
@@ -121,62 +123,64 @@ def menu_view(request):
     }
     return render(request, 'menu.html', context)
 
+# ==============================================================================
+# NOVA/ATUALIZADA LÓGICA DA PAGINA DE DEPÓSITO
+# ==============================================================================
 @login_required
 def deposito_view(request):
-    bancos = PlatformBankDetails.objects.all()
-    banco_selecionado = None
-    valor_deposito = None
+    # Tenta obter as configurações e detalhes bancários da plataforma
+    config = Config.objects.first()
+    detalhes_bancarios_plataforma = PlatformBankDetails.objects.all()
+    
+    if not config:
+        messages.error(request, "As configurações da plataforma não foram encontradas. Contate o suporte.")
+        return redirect('menu')
+        
+    if not detalhes_bancarios_plataforma.exists():
+        messages.error(request, "A plataforma não tem coordenadas bancárias configuradas para depósito.")
+        # Pode ser melhor mostrar a página com a mensagem, ou redirecionar para o perfil/home.
+        # Por agora, mantemos o fluxo normal, mas o template deve lidar com a lista vazia.
+        # return redirect('menu')
+
+    # Para a lógica do DepositoForm, vamos assumir que o cliente deposita para o PRIMEIRO banco listado.
+    # Se você tiver vários bancos, o formulário HTML/Template precisará de um campo de seleção.
+    banco_destino = detalhes_bancarios_plataforma.first() 
     
     if request.method == 'POST':
-        # Verifica qual formulário foi enviado
-        if 'proof' in request.FILES:
-            # Lógica para o formulário de envio de comprovante (Passo 3)
-            try:
-                valor_deposito_str = request.POST.get('valor_deposito')
-                banco_nome = request.POST.get('banco_selecionado_nome')
-                depositor_name = request.POST.get('depositor_name')
-                comprovante = request.FILES['proof']
+        form = DepositoForm(request.POST, request.FILES)
 
-                # Limpeza e conversão do valor antes de criar o objeto Deposito
-                if valor_deposito_str:
-                    valor_deposito_str = valor_deposito_str.replace(',', '.')
-                    valor_deposito = Decimal(valor_deposito_str)
-                else:
-                    raise ValueError('Valor do depósito não fornecido.')
-
-                novo_deposito = Deposito.objects.create(
-                    usuario=request.user,
-                    valor=valor_deposito,
-                    banco_destino_nome=banco_nome,
-                    nome_cliente_banco=depositor_name,
-                    comprovativo_imagem=comprovante,
-                    status='Pendente'
-                )
-                
-                messages.success(request, 'Comprovante enviado com sucesso! Aguarde a aprovação do administrador.')
-                return redirect('menu')
-                
-            except Exception as e:
-                # O erro de conversão será capturado aqui
-                messages.error(request, f'Ocorreu um erro ao enviar o comprovante: {e}')
-                # Redireciona para o passo 3, caso queira que o usuário tente novamente
-                return redirect('deposito')
-        else:
-            # Lógica para o formulário de seleção do banco (Passo 1)
-            valor_deposito = request.POST.get('valor_deposito')
-            banco_nome = request.POST.get('method')
+        if form.is_valid():
+            deposito = form.save(commit=False)
+            deposito.usuario = request.user
             
-            try:
-                banco_selecionado = PlatformBankDetails.objects.get(nome_banco=banco_nome)
-            except PlatformBankDetails.DoesNotExist:
-                messages.error(request, 'Banco não encontrado.')
-                
+            # Preenche o campo `banco_destino_nome` com o nome do banco da plataforma
+            if banco_destino:
+                deposito.banco_destino_nome = banco_destino.nome_banco
+            else:
+                deposito.banco_destino_nome = "Não Definido"
+            
+            # O status padrão é 'Pendente'
+            deposito.save() 
+            
+            messages.success(request, 'Depósito submetido com sucesso! Aguardando aprovação do administrador.')
+            return redirect('menu') # Redireciona para o menu após submissão
+        else:
+            # Caso o formulário seja inválido (ex: valor ou imagem faltando)
+            messages.error(request, 'Erro ao submeter o depósito. Por favor, verifique os campos e tente novamente.')
+            
+    else:
+        # Se for um GET request, inicializa o formulário (pode ter dados iniciais do banco, mas DepositoForm é simples)
+        form = DepositoForm()
+        
+    # Contexto para o Template
     context = {
-        'bancos': bancos,
-        'banco_selecionado': banco_selecionado,
-        'valor_deposito': valor_deposito,
+        'form': form,
+        'config': config,
+        'detalhes_bancarios': detalhes_bancarios_plataforma, # Passa todos os bancos para o template
     }
+    
     return render(request, 'deposito.html', context)
+
 
 def aprovar_deposito_com_subsidio(deposito_id):
     try:
@@ -195,10 +199,14 @@ def aprovar_deposito_com_subsidio(deposito_id):
             deposito.save()
             print(f"Depósito {deposito_id} marcado como 'Aprovado'.")
 
+            # Credita o valor do depósito ao saldo DISPONÍVEL
             deposito.usuario.saldo_disponivel += deposito.valor
+            # (Opcional) Credita ao saldo geral
+            deposito.usuario.saldo += deposito.valor 
             deposito.usuario.save()
             print(f"Valor do depósito ({deposito.valor:.2f} KZ) creditado ao saldo do usuário {deposito.usuario.phone_number}.")
 
+            # Lógica de subsídio/comissão de convite
             convidador = deposito.usuario.inviter
             if convidador:
                 has_active_level_inviter = NivelAlugado.objects.filter(usuario=convidador, is_active=True).exists()
@@ -272,6 +280,8 @@ def saque_view(request):
             return redirect('saque')
             
         try:
+            # Substitui vírgula por ponto para garantir que o Decimal funcione
+            valor_saque_bruto_str = valor_saque_bruto_str.replace(',', '.')
             valor_saque_bruto = Decimal(valor_saque_bruto_str)
         except (ValueError, TypeError):
             messages.error(request, 'Valor de saque inválido.')
@@ -307,6 +317,7 @@ def saque_view(request):
                 )
                 
                 # Atualiza o total sacado com o valor líquido
+                # Atenção: Esta lógica soma o líquido no total_sacado ANTES da aprovação. Se preferir somar APÓS a aprovação, remova esta linha.
                 usuario.total_sacado += valor_saque_liquido
                 usuario.save()
             
@@ -568,6 +579,8 @@ def editar_coordenadas_bancarias(request):
             coordenadas.save()
             messages.success(request, 'Coordenadas bancárias atualizadas com sucesso!')
             return redirect('perfil')
+        else:
+            messages.error(request, 'Por favor, corrija os erros no formulário.')
     else:
         bank_form = ClientBankDetailsForm(instance=client_bank_details)
     
